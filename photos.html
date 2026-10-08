@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse developer photos, workspace setups, and community moments on OBlog.">
+    <title>Photos — OBlog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <a href="index.html" class="nav-logo" aria-label="OBlog Home">OBlog</a>
+                <ul class="nav-links" role="list">
+                    <li><a href="index.html"       class="nav-link"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+                    <li><a href="explore.html"     class="nav-link"><i class="fa-solid fa-compass" aria-hidden="true"></i> Explore</a></li>
+                    <li><a href="discussions.html" class="nav-link"><i class="fa-solid fa-comments" aria-hidden="true"></i> Discussions</a></li>
+                    <li><a href="videos.html"      class="nav-link"><i class="fa-solid fa-play" aria-hidden="true"></i> Videos</a></li>
+                    <li><a href="photos.html"      class="nav-link active" aria-current="page"><i class="fa-solid fa-image" aria-hidden="true"></i> Photos</a></li>
+                    <li><a href="login.html"    class="nav-link nav-link-login"    style="display:none;"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Log In</a></li>
+                    <li><a href="register.html" class="nav-link nav-link-register" style="display:none;"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
+                </ul>
+                <div class="nav-right">
+                    <div class="nav-search" role="search">
+                        <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+                        <input type="search" id="navSearchInput" placeholder="Search OBlog..." aria-label="Search posts">
+                    </div>
+                    <a href="create-post.html" class="btn-create" aria-label="Create a new post">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                        <span>Create</span>
+                    </a>
+                    <div class="notif-wrapper">
+                        <button class="nav-icon-btn" id="notifBtn" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                            <span class="notif-badge"></span>
+                        </button>
+                        <div class="notif-dropdown" id="notifDropdown" role="dialog" aria-label="Notifications">
+                            <div class="notif-header">
+                                <h4>Notifications</h4>
+                                <button class="notif-clear" id="notifClear">Mark all read</button>
+                            </div>
+                            <div id="notifList" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <button class="nav-icon-btn" id="themeToggle" aria-label="Switch to dark mode">
+                        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                    </button>
+                    <a href="profile.html" class="nav-avatar" aria-label="View your profile">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=currentuser" alt="Your profile">
+                    </a>
+                    <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+            <div class="mobile-search" role="search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="mobileSearchInput" placeholder="Search OBlog..." aria-label="Search posts">
+            </div>
+            <a href="index.html"       class="nav-link"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a>
+            <a href="photos.html"      class="nav-link active"><i class="fa-solid fa-image" aria-hidden="true"></i> Photos</a>
+            <a href="videos.html"      class="nav-link"><i class="fa-solid fa-play" aria-hidden="true"></i> Videos</a>
+            <a href="create-post.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus" aria-hidden="true"></i> Create Post</a>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="page-wrapper">
+
+        <section class="page-hero" aria-labelledby="photosHeading">
+            <div class="container">
+                <h1 id="photosHeading">
+                    <i class="fa-solid fa-image" aria-hidden="true" style="color:var(--color-accent);"></i>
+                    Photos
+                </h1>
+                <p>Developer workspaces, project screenshots, community events, and more.</p>
+            </div>
+        </section>
+
+        <div class="container layout-full">
+
+            <!-- UPLOAD SECTION (logged-in users only) -->
+            <section id="uploadSection" style="display:none; margin-bottom:32px;"
+                     aria-labelledby="uploadHeading">
+                <div style="background:var(--bg-card); border:1px solid var(--border-color);
+                            border-radius:var(--radius-lg); padding:24px;">
+                    <h2 id="uploadHeading" style="font-size:18px; margin-bottom:16px;">
+                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"
+                           style="color:var(--color-accent);"></i>
+                        Upload a Photo
+                    </h2>
+                    <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-end;">
+                        <div style="flex:1; min-width:220px;">
+                            <label class="form-label" for="photoFileInput">
+                                Choose image
+                            </label>
+                            <input type="file" id="photoFileInput" class="form-input"
+                                   accept="image/*" style="padding:6px;"
+                                   aria-label="Choose an image to upload">
+                        </div>
+                        <div style="flex:2; min-width:220px;">
+                            <label class="form-label" for="photoCaptionInput">
+                                Caption (optional)
+                            </label>
+                            <input type="text" id="photoCaptionInput" class="form-input"
+                                   placeholder="Describe this photo..."
+                                   aria-label="Photo caption">
+                        </div>
+                        <button id="uploadPhotoBtn" class="btn btn-primary"
+                                style="flex-shrink:0;" aria-label="Upload photo">
+                            <i class="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i>
+                            Upload
+                        </button>
+                    </div>
+                    <!-- Preview of selected image before upload -->
+                    <img id="uploadPreview" src="" alt="Upload preview"
+                         style="display:none; max-height:200px; margin-top:16px;
+                                border-radius:var(--radius-md); object-fit:cover;">
+                </div>
+            </section>
+
+            <!-- PHOTO GRID -->
+            <section aria-labelledby="photoGridHeading">
+                <h2 id="photoGridHeading" class="section-heading">
+                    <i class="fa-solid fa-grid-2" aria-hidden="true"></i>
+                    Community Photos
+                </h2>
+                <div id="photoGrid" class="photo-grid" aria-label="Photo gallery">
+                    <!-- Rendered by inline script -->
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- LIGHTBOX OVERLAY -->
+    <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer"
+         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9998; align-items:center; justify-content:center;">
+        <button id="lightboxClose" aria-label="Close photo viewer"
+                style="position:absolute; top:20px; right:24px; color:white; font-size:28px; background:none; border:none; cursor:pointer; z-index:9999;">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <img id="lightboxImg" src="" alt=""
+             style="max-width:90vw; max-height:90vh; border-radius:12px; object-fit:contain;">
+        <div id="lightboxCaption"
+             style="position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:white; text-align:center; font-size:15px; font-weight:600;"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo">OBlog</a>
+                    <p class="footer-tagline">Write. Share. Connect.</p>
+                </div>
+                <div class="footer-col"><h4>OBlog</h4><nav class="footer-links"><a href="index.html">Home</a><a href="explore.html">Explore</a><a href="discussions.html">Discussions</a></nav></div>
+                <div class="footer-col"><h4>Account</h4><nav class="footer-links"><a href="profile.html">Profile</a><a href="create-post.html">Create Post</a></nav></div>
+                <div class="footer-col"><h4>Company</h4><nav class="footer-links"><a href="contact.html">Contact</a><a href="#">About</a><a href="#">Privacy</a></nav></div>
+            </div>
+            <div class="footer-bottom">
+                <span class="footer-copy">© 2026 OBlog. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
+        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/posts.js"></script>
+
+    <!-- Photo upload, grid render, lightbox, and likes -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // -------------------------------------------------------
+        // HELPERS
+        // -------------------------------------------------------
+        function escapeAttr(str) {
+            return String(str || "").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+        }
+
+        // -------------------------------------------------------
+        // SHOW UPLOAD SECTION IF LOGGED IN
+        // -------------------------------------------------------
+        const uploadSection = document.getElementById("uploadSection");
+        const currentUser   = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+        if (uploadSection && currentUser) {
+            uploadSection.style.display = "block";
+        }
+
+        // -------------------------------------------------------
+        // IMAGE PREVIEW before upload
+        // -------------------------------------------------------
+        const photoFileInput = document.getElementById("photoFileInput");
+        const uploadPreview  = document.getElementById("uploadPreview");
+
+        if (photoFileInput && uploadPreview) {
+            photoFileInput.addEventListener("change", function () {
+                const file = photoFileInput.files[0];
+                if (!file || !file.type.startsWith("image/")) {
+                    uploadPreview.style.display = "none";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    uploadPreview.src         = e.target.result;
+                    uploadPreview.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // -------------------------------------------------------
+        // UPLOAD PHOTO — reads file with FileReader, saves to
+        // oblogPhotos in localStorage under the current user's ID
+        // -------------------------------------------------------
+        const uploadBtn    = document.getElementById("uploadPhotoBtn");
+        const captionInput = document.getElementById("photoCaptionInput");
+
+        if (uploadBtn) {
+            uploadBtn.addEventListener("click", function () {
+
+                if (!currentUser) {
+                    showToast("🔒 Please log in to upload photos.");
+                    return;
+                }
+
+                const file = photoFileInput ? photoFileInput.files[0] : null;
+                if (!file) {
+                    showToast("⚠️ Please choose an image file first.");
+                    return;
+                }
+                if (!file.type.startsWith("image/")) {
+                    showToast("⚠️ Only image files are supported.");
+                    return;
+                }
+                if (file.size > 4 * 1024 * 1024) {
+                    showToast("⚠️ Image is too large (max ~4 MB). Please compress it first.");
+                    return;
+                }
+
+                // Disable button while reading
+                uploadBtn.disabled    = true;
+                uploadBtn.textContent = "Uploading…";
+
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    // event.target.result is the full base64 data URL
+                    const imageDataUrl = event.target.result;
+                    const caption      = captionInput ? captionInput.value.trim() : "";
+
+                    // Build the photo object
+                    const newPhoto = {
+                        id:        "photo_" + Date.now(),
+                        userId:    currentUser.id,
+                        image:     imageDataUrl,
+                        caption:   caption,
+                        title:     caption || "Photo by " + currentUser.name,
+                        author:    currentUser.name,
+                        username:  currentUser.username,
+                        avatar:    currentUser.avatar,
+                        likes:     [],
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // Load existing saved photos and add the new one to the front
+                    const allSavedPhotos = JSON.parse(localStorage.getItem("oblogPhotos")) || [];
+                    allSavedPhotos.unshift(newPhoto);
+                    localStorage.setItem("oblogPhotos", JSON.stringify(allSavedPhotos));
+
+                    // Clear the form
+                    if (photoFileInput) { photoFileInput.value = ""; }
+                    if (captionInput)   { captionInput.value   = ""; }
+                    if (uploadPreview)  { uploadPreview.style.display = "none"; uploadPreview.src = ""; }
+
+                    // Re-render the grid to show the new photo
+                    renderPhotoGrid();
+
+                    uploadBtn.disabled    = false;
+                    uploadBtn.innerHTML   = '<i class="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i> Upload';
+                    showToast("📸 Photo uploaded!");
+                };
+
+                reader.onerror = function () {
+                    showToast("❌ Could not read the image. Please try again.");
+                    uploadBtn.disabled    = false;
+                    uploadBtn.innerHTML   = '<i class="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i> Upload';
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // -------------------------------------------------------
+        // RENDER PHOTO GRID
+        // Merges user-uploaded photos (oblogPhotos) with the
+        // sample photos array from data.js
+        // -------------------------------------------------------
+        function renderPhotoGrid() {
+            const grid = document.getElementById("photoGrid");
+            if (!grid) return;
+
+            // Get user-uploaded photos from localStorage
+            const storedPhotos = JSON.parse(localStorage.getItem("oblogPhotos")) || [];
+
+            // Build the sample photos list (from data.js constant)
+            const samplePhotoList = typeof photos !== "undefined" ? photos : [];
+
+            // Merge: uploaded photos first, then sample photos
+            const allPhotos = storedPhotos.concat(samplePhotoList);
+
+            if (allPhotos.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-regular fa-image" aria-hidden="true"></i>
+                        <h3>No photos yet</h3>
+                        <p>Be the first to upload a photo!</p>
+                    </div>`;
+                return;
+            }
+
+            let html = "";
+            allPhotos.forEach(function (photo) {
+
+                // Work out like state
+                // Uploaded photos use likes[] arrays; sample photos use a separate key
+                let isLiked, likeCount;
+
+                if (Array.isArray(photo.likes)) {
+                    // User-uploaded photo — likes is an array of user IDs
+                    isLiked   = currentUser ? photo.likes.includes(currentUser.id) : false;
+                    likeCount = photo.likes.length;
+                } else {
+                    // Sample photo — use legacy oblog-liked-photos array
+                    const likedArr = JSON.parse(localStorage.getItem("oblog-liked-photos")) || [];
+                    isLiked   = likedArr.includes(photo.id);
+                    likeCount = isLiked ? (photo.likes || 0) + 1 : (photo.likes || 0);
+                }
+
+                const heartIcon  = isLiked ? "fa-solid fa-heart" : "fa-regular fa-heart";
+                const heartColor = isLiked ? "#ef4444" : "rgba(255,255,255,0.8)";
+                const titleText  = photo.title || photo.caption || "Photo";
+                const authorName = photo.author || "Unknown";
+                const authorAvatar = photo.avatar || "";
+
+                // Look up fresh author avatar from oblogUsers if possible
+                let freshAvatar = authorAvatar;
+                if (photo.userId && typeof getUsers === "function") {
+                    const allUsers  = getUsers();
+                    const photoUser = allUsers.find(function (u) { return u.id === photo.userId; });
+                    if (photoUser) freshAvatar = photoUser.avatar || authorAvatar;
+                }
+
+                html += `
+                    <div class="photo-item"
+                         data-photo-id="${escapeAttr(photo.id)}"
+                         data-photo-type="${Array.isArray(photo.likes) ? "user" : "sample"}"
+                         data-src="${escapeAttr(photo.image)}"
+                         data-title="${escapeAttr(titleText)}">
+                        <img src="${photo.image}" alt="${escapeAttr(titleText)}" loading="lazy">
+                        <div class="photo-overlay">
+                            <span class="photo-overlay-title">${titleText}</span>
+                            <div class="photo-overlay-author">
+                                <img src="${freshAvatar}" alt="${escapeAttr(authorName)}" loading="lazy">
+                                <a href="profile.html${photo.userId ? "?id=" + photo.userId : ""}"
+                                   style="color:rgba(255,255,255,0.9); text-decoration:none;"
+                                   onclick="event.stopPropagation();">
+                                   ${authorName}
+                                </a>
+                                <span style="margin-left:auto; display:flex; align-items:center; gap:4px;">
+                                    <button
+                                        class="photo-like-btn ${isLiked ? "liked" : ""}"
+                                        data-photo-id="${escapeAttr(photo.id)}"
+                                        aria-label="Like this photo"
+                                        aria-pressed="${isLiked}"
+                                        style="background:none; border:none; color:${heartColor};
+                                               cursor:pointer; display:flex; align-items:center;
+                                               gap:4px; font-size:13px;">
+                                        <i class="${heartIcon}" aria-hidden="true"></i>
+                                        <span class="photo-like-count">${likeCount}</span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            grid.innerHTML = html;
+
+            // ---- Re-attach lightbox ----
+            attachLightbox();
+
+            // ---- Re-attach like handlers ----
+            attachPhotoLikes();
+        }
+
+        // -------------------------------------------------------
+        // LIGHTBOX
+        // -------------------------------------------------------
+        function attachLightbox() {
+            const grid         = document.getElementById("photoGrid");
+            const lightbox     = document.getElementById("lightbox");
+            const lightboxImg  = document.getElementById("lightboxImg");
+            const lightboxCap  = document.getElementById("lightboxCaption");
+            const lightboxClose = document.getElementById("lightboxClose");
+            if (!grid || !lightbox) return;
+
+            grid.querySelectorAll(".photo-item").forEach(function (item) {
+                item.addEventListener("click", function (event) {
+                    if (event.target.closest("button") || event.target.closest("a")) return;
+                    const src   = item.getAttribute("data-src");
+                    const title = item.getAttribute("data-title");
+                    lightboxImg.src         = src;
+                    lightboxImg.alt         = title;
+                    lightboxCap.textContent = title;
+                    lightbox.style.display  = "flex";
+                    document.body.style.overflow = "hidden";
+                    if (lightboxClose) lightboxClose.focus();
+                });
+            });
+
+            function closeLightbox() {
+                lightbox.style.display       = "none";
+                document.body.style.overflow = "";
+                lightboxImg.src              = "";
+            }
+
+            if (lightboxClose) {
+                // Remove old handler first to avoid stacking
+                const fresh = lightboxClose.cloneNode(true);
+                lightboxClose.parentNode.replaceChild(fresh, lightboxClose);
+                fresh.addEventListener("click", closeLightbox);
+            }
+
+            lightbox.addEventListener("click", function (event) {
+                if (event.target === lightbox) closeLightbox();
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape" && lightbox.style.display === "flex") closeLightbox();
+            });
+        }
+
+        // -------------------------------------------------------
+        // PHOTO LIKES
+        // User-uploaded photos: likes stored in the photo object
+        // Sample photos: likes stored in oblog-liked-photos array
+        // -------------------------------------------------------
+        function attachPhotoLikes() {
+            const grid = document.getElementById("photoGrid");
+            if (!grid) return;
+
+            grid.querySelectorAll(".photo-like-btn").forEach(function (btn) {
+                btn.addEventListener("click", function (event) {
+                    event.stopPropagation();
+
+                    if (!currentUser) {
+                        showToast("🔒 Please log in to like photos.");
+                        return;
+                    }
+
+                    const photoId   = btn.getAttribute("data-photo-id");
+                    const photoType = btn.closest(".photo-item").getAttribute("data-photo-type");
+                    const countEl   = btn.querySelector(".photo-like-count");
+                    const iconEl    = btn.querySelector("i");
+                    let   count     = parseInt(countEl.textContent) || 0;
+
+                    if (photoType === "user") {
+                        // User-uploaded photo — update likes array inside oblogPhotos
+                        const allStored = JSON.parse(localStorage.getItem("oblogPhotos")) || [];
+                        const idx       = allStored.findIndex(function (p) { return p.id === photoId; });
+                        if (idx === -1) return;
+
+                        if (!Array.isArray(allStored[idx].likes)) allStored[idx].likes = [];
+
+                        const alreadyLiked = allStored[idx].likes.includes(currentUser.id);
+                        if (alreadyLiked) {
+                            allStored[idx].likes = allStored[idx].likes.filter(function (id) { return id !== currentUser.id; });
+                            count--;
+                            btn.classList.remove("liked");
+                            iconEl.className  = "fa-regular fa-heart";
+                            btn.style.color   = "rgba(255,255,255,0.8)";
+                            btn.setAttribute("aria-pressed", "false");
+                        } else {
+                            allStored[idx].likes.push(currentUser.id);
+                            count++;
+                            btn.classList.add("liked");
+                            iconEl.className  = "fa-solid fa-heart";
+                            btn.style.color   = "#ef4444";
+                            btn.setAttribute("aria-pressed", "true");
+                            showToast("❤️ Photo liked!");
+                        }
+                        countEl.textContent = count;
+                        localStorage.setItem("oblogPhotos", JSON.stringify(allStored));
+
+                    } else {
+                        // Sample photo — legacy approach with separate likes key
+                        let likedArr = JSON.parse(localStorage.getItem("oblog-liked-photos")) || [];
+                        const liked  = likedArr.includes(photoId);
+                        if (liked) {
+                            likedArr = likedArr.filter(function (id) { return id !== photoId; });
+                            count--;
+                            btn.classList.remove("liked");
+                            iconEl.className  = "fa-regular fa-heart";
+                            btn.style.color   = "rgba(255,255,255,0.8)";
+                            btn.setAttribute("aria-pressed", "false");
+                        } else {
+                            likedArr.push(photoId);
+                            count++;
+                            btn.classList.add("liked");
+                            iconEl.className  = "fa-solid fa-heart";
+                            btn.style.color   = "#ef4444";
+                            btn.setAttribute("aria-pressed", "true");
+                            showToast("❤️ Photo liked!");
+                        }
+                        countEl.textContent = count;
+                        localStorage.setItem("oblog-liked-photos", JSON.stringify(likedArr));
+                    }
+                });
+            });
+        }
+
+        // ---- Initial render ----
+        renderPhotoGrid();
+    });
+    </script>
+
+</body>
+</html>

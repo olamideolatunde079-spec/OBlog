@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Log in to your OBlog account.">
+    <title>Log In — OBlog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Auth page layout — centered card */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background: var(--bg-page);
+        }
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: var(--shadow);
+        }
+        .auth-logo {
+            display: block;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 8px;
+            text-decoration: none;
+        }
+        .auth-tagline {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+        .auth-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        .auth-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+        .auth-error-banner {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #991B1B;
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        body.dark-mode .auth-error-banner {
+            background: #2D1515;
+            border-color: #7F1D1D;
+            color: #FCA5A5;
+        }
+        .auth-error {
+            display: none;
+            font-size: 12px;
+            color: var(--color-danger);
+            margin-top: 4px;
+            gap: 4px;
+            align-items: center;
+        }
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .auth-divider::before,
+        .auth-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+        .auth-switch {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 20px;
+        }
+        .auth-switch a {
+            color: var(--color-accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        .show-password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 15px;
+            padding: 4px;
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper .form-input {
+            padding-right: 42px;
+        }
+        @media (max-width: 480px) {
+            .auth-card { padding: 28px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-page">
+        <div class="auth-card">
+
+            <!-- Logo -->
+            <a href="index.html" class="auth-logo">OBlog</a>
+            <p class="auth-tagline">Write. Share. Connect.</p>
+
+            <h1 class="auth-title">Welcome back</h1>
+            <p class="auth-subtitle">Log in to your account to continue.</p>
+
+            <!-- Global error banner -->
+            <div id="loginError" class="auth-error-banner" role="alert" aria-live="polite">
+                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                <span></span>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" novalidate>
+
+                <div class="form-group">
+                    <label class="form-label" for="loginUsername">Username or Email</label>
+                    <input
+                        type="text"
+                        id="loginUsername"
+                        class="form-input"
+                        placeholder="your_username or email@example.com"
+                        autocomplete="username"
+                        required
+                        aria-required="true"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <div class="password-wrapper">
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            class="form-input"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                            aria-required="true"
+                        >
+                        <button type="button" class="show-password-toggle"
+                            aria-label="Show or hide password"
+                            onclick="togglePasswordVisibility('loginPassword', this)">
+                            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full btn-lg" style="margin-top:8px;">
+                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                    Log In
+                </button>
+
+            </form>
+
+            <div class="auth-divider">or</div>
+
+            <div class="auth-switch">
+                Don't have an account? <a href="register.html">Sign up for free</a>
+            </div>
+
+            <div style="text-align:center; margin-top:16px;">
+                <a href="index.html" style="font-size:13px; color:var(--text-muted);">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    Continue browsing as guest
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Theme toggle (bottom-right, minimal) -->
+    <button id="themeToggle" class="scroll-top" style="bottom:24px;right:24px;opacity:1;pointer-events:all;"
+            aria-label="Switch to dark mode">
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+    </button>
+
+    <!-- Scripts — auth.js must be first -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Show/hide password toggle
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            if (input.type === "password") {
+                input.type = "text";
+                btn.innerHTML = '<i class="fa-regular fa-eye-slash" aria-hidden="true"></i>';
+                btn.setAttribute("aria-label", "Hide password");
+            } else {
+                input.type = "password";
+                btn.innerHTML = '<i class="fa-regular fa-eye" aria-hidden="true"></i>';
+                btn.setAttribute("aria-label", "Show password");
+            }
+        }
+
+        // Override the loginError element handler — auth.js uses innerHTML of the span
+        // Patch: auth.js does errorEl.textContent = result.error, errorEl.style.display = "flex"
+        // but our banner wraps it in a span. Fix so the text lands in the span.
+        document.addEventListener("DOMContentLoaded", function () {
+            // Redirect to homepage if already logged in
+            if (typeof requireGuest === "function") requireGuest();
+
+            // Check if there's a redirect target from a protected page
+            const redirect = sessionStorage.getItem("oblogRedirectAfterLogin");
+
+            // Re-wire the login form to handle the banner correctly
+            const form      = document.getElementById("loginForm");
+            const errorBanner = document.getElementById("loginError");
+            const errorSpan   = errorBanner ? errorBanner.querySelector("span") : null;
+
+            if (form) {
+                form.addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    const usernameOrEmail = document.getElementById("loginUsername").value;
+                    const password        = document.getElementById("loginPassword").value;
+
+                    if (errorBanner) errorBanner.style.display = "none";
+
+                    const result = loginUser(usernameOrEmail, password);
+
+                    if (!result.success) {
+                        if (errorSpan)   errorSpan.textContent     = result.error;
+                        if (errorBanner) errorBanner.style.display = "flex";
+                        return;
+                    }
+
+                    // Go to redirect target or homepage
+                    const dest = redirect || "index.html";
+                    sessionStorage.removeItem("oblogRedirectAfterLogin");
+                    window.location.href = dest;
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

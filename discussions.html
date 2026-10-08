@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Join community discussions on OBlog. Ask questions, share ideas, and connect with other developers.">
+    <title>Discussions — OBlog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <a href="index.html" class="nav-logo" aria-label="OBlog Home">OBlog</a>
+                <ul class="nav-links" role="list">
+                    <li><a href="index.html"       class="nav-link"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+                    <li><a href="explore.html"     class="nav-link"><i class="fa-solid fa-compass" aria-hidden="true"></i> Explore</a></li>
+                    <li><a href="discussions.html" class="nav-link active" aria-current="page"><i class="fa-solid fa-comments" aria-hidden="true"></i> Discussions</a></li>
+                    <li><a href="videos.html"      class="nav-link"><i class="fa-solid fa-play" aria-hidden="true"></i> Videos</a></li>
+                    <li><a href="photos.html"      class="nav-link"><i class="fa-solid fa-image" aria-hidden="true"></i> Photos</a></li>
+                    <li><a href="login.html"    class="nav-link nav-link-login"    style="display:none;"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Log In</a></li>
+                    <li><a href="register.html" class="nav-link nav-link-register" style="display:none;"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
+                </ul>
+                <div class="nav-right">
+                    <div class="nav-search" role="search">
+                        <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+                        <input type="search" id="navSearchInput" placeholder="Search OBlog..." aria-label="Search posts">
+                    </div>
+                    <a href="create-post.html" class="btn-create" aria-label="Create a new post">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                        <span>Create</span>
+                    </a>
+                    <div class="notif-wrapper">
+                        <button class="nav-icon-btn" id="notifBtn" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                            <span class="notif-badge"></span>
+                        </button>
+                        <div class="notif-dropdown" id="notifDropdown" role="dialog" aria-label="Notifications">
+                            <div class="notif-header">
+                                <h4>Notifications</h4>
+                                <button class="notif-clear" id="notifClear">Mark all read</button>
+                            </div>
+                            <div id="notifList" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <button class="nav-icon-btn" id="themeToggle" aria-label="Switch to dark mode">
+                        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                    </button>
+                    <a href="profile.html" class="nav-avatar" aria-label="View your profile">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=currentuser" alt="Your profile">
+                    </a>
+                    <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+            <div class="mobile-search" role="search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="mobileSearchInput" placeholder="Search OBlog..." aria-label="Search posts">
+            </div>
+            <a href="index.html"       class="nav-link"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a>
+            <a href="explore.html"     class="nav-link"><i class="fa-solid fa-compass" aria-hidden="true"></i> Explore</a>
+            <a href="discussions.html" class="nav-link active"><i class="fa-solid fa-comments" aria-hidden="true"></i> Discussions</a>
+            <a href="create-post.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus" aria-hidden="true"></i> Create Post</a>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="page-wrapper">
+
+        <section class="page-hero" aria-labelledby="discHeading">
+            <div class="container">
+                <h1 id="discHeading">
+                    <i class="fa-solid fa-comments" aria-hidden="true" style="color:var(--color-accent);"></i>
+                    Discussions
+                </h1>
+                <p>Ask questions, share ideas, and connect with the OBlog community.</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="discussions-layout">
+
+                <!-- DISCUSSION FEED -->
+                <section aria-labelledby="discFeedHeading">
+
+                    <!-- Start a new discussion -->
+                    <div class="new-discussion-form" aria-labelledby="newDiscHeading">
+                        <h3 id="newDiscHeading">
+                            <i class="fa-solid fa-plus" aria-hidden="true" style="color:var(--color-accent);"></i>
+                            Start a Discussion
+                        </h3>
+
+                        <div class="form-group">
+                            <label class="form-label" for="discussionTitle">
+                                Title <span class="required" aria-hidden="true">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="discussionTitle"
+                                class="form-input"
+                                placeholder="What do you want to discuss?"
+                                aria-required="true"
+                                aria-describedby="discTitleError"
+                            >
+                            <span id="discTitleError" class="form-error disc-error" style="display:none;" role="alert">
+                                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="discussionBody">
+                                Question or Context <span class="required" aria-hidden="true">*</span>
+                            </label>
+                            <textarea
+                                id="discussionBody"
+                                class="form-input form-textarea"
+                                placeholder="Provide more detail to help others give useful answers..."
+                                rows="4"
+                                aria-required="true"
+                                aria-describedby="discBodyError"
+                            ></textarea>
+                            <span id="discBodyError" class="form-error disc-error" style="display:none;" role="alert">
+                                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="discussionTags">Tags</label>
+                            <input
+                                type="text"
+                                id="discussionTags"
+                                class="form-input"
+                                placeholder="JavaScript, Career, Beginners"
+                                aria-describedby="discTagsHint"
+                            >
+                            <span id="discTagsHint" class="form-hint">Separate tags with commas.</span>
+                        </div>
+
+                        <button id="postDiscussionBtn" class="btn btn-primary">
+                            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                            Post Discussion
+                        </button>
+                    </div>
+
+                    <h2 id="discFeedHeading" style="font-size:20px; margin-bottom:16px; color:var(--text-primary);">
+                        <i class="fa-solid fa-fire" aria-hidden="true" style="color:var(--color-accent);"></i>
+                        All Discussions
+                    </h2>
+
+                    <!-- Discussion cards — rendered by interactions.js -->
+                    <div id="discussionFeed" class="post-feed" aria-live="polite" aria-label="Discussions">
+                        <div class="loading-state">
+                            <i class="fa-solid fa-spinner" aria-hidden="true"></i>
+                            Loading discussions...
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- SIDEBAR -->
+                <aside aria-label="Discussions sidebar">
+
+                    <div class="sidebar-widget">
+                        <h3 class="sidebar-widget-title">
+                            <i class="fa-solid fa-fire" aria-hidden="true" style="color:var(--color-accent);"></i>
+                            Popular Tags
+                        </h3>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                            <span class="tag">#JavaScript</span>
+                            <span class="tag">#Career</span>
+                            <span class="tag">#Beginners</span>
+                            <span class="tag">#WebDevelopment</span>
+                            <span class="tag">#CSS</span>
+                            <span class="tag">#Programming</span>
+                            <span class="tag">#Tools</span>
+                            <span class="tag">#Learning</span>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-widget">
+                        <h3 class="sidebar-widget-title">
+                            <i class="fa-solid fa-circle-info" aria-hidden="true" style="color:var(--color-accent);"></i>
+                            Community Guidelines
+                        </h3>
+                        <ul style="display:flex; flex-direction:column; gap:10px;" role="list">
+                            <li style="display:flex; gap:8px; font-size:13px; color:var(--text-secondary);">
+                                <i class="fa-solid fa-check" style="color:var(--color-success); flex-shrink:0; margin-top:2px;" aria-hidden="true"></i>
+                                Be kind and respectful to everyone.
+                            </li>
+                            <li style="display:flex; gap:8px; font-size:13px; color:var(--text-secondary);">
+                                <i class="fa-solid fa-check" style="color:var(--color-success); flex-shrink:0; margin-top:2px;" aria-hidden="true"></i>
+                                Stay on topic and keep it constructive.
+                            </li>
+                            <li style="display:flex; gap:8px; font-size:13px; color:var(--text-secondary);">
+                                <i class="fa-solid fa-check" style="color:var(--color-success); flex-shrink:0; margin-top:2px;" aria-hidden="true"></i>
+                                Share knowledge and help others grow.
+                            </li>
+                            <li style="display:flex; gap:8px; font-size:13px; color:var(--text-secondary);">
+                                <i class="fa-solid fa-check" style="color:var(--color-success); flex-shrink:0; margin-top:2px;" aria-hidden="true"></i>
+                                No spam, self-promotion only with value.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-widget">
+                        <h3 class="sidebar-widget-title">
+                            <i class="fa-solid fa-chart-simple" aria-hidden="true" style="color:var(--color-accent);"></i>
+                            Community Stats
+                        </h3>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:13px; color:var(--text-secondary);">Discussions</span>
+                                <strong style="font-size:14px;">142</strong>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:13px; color:var(--text-secondary);">Members</span>
+                                <strong style="font-size:14px;">2,841</strong>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:13px; color:var(--text-secondary);">Posts this week</span>
+                                <strong style="font-size:14px;">38</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                </aside>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo">OBlog</a>
+                    <p class="footer-tagline">Write. Share. Connect.</p>
+                </div>
+                <div class="footer-col"><h4>OBlog</h4><nav class="footer-links"><a href="index.html">Home</a><a href="explore.html">Explore</a><a href="discussions.html">Discussions</a></nav></div>
+                <div class="footer-col"><h4>Account</h4><nav class="footer-links"><a href="profile.html">Profile</a><a href="create-post.html">Create Post</a></nav></div>
+                <div class="footer-col"><h4>Company</h4><nav class="footer-links"><a href="contact.html">Contact</a><a href="#">About</a><a href="#">Privacy</a></nav></div>
+            </div>
+            <div class="footer-bottom">
+                <span class="footer-copy">© 2026 OBlog. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
+        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/posts.js"></script>
+
+</body>
+</html>

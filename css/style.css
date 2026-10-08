@@ -8,36 +8,36 @@
    Makes it easy to change colors and fonts in one place
    ------------------------------------------------------- */
 :root {
-    /* Colors — Light Mode */
-    --color-black:        #111111;
-    --color-black-2:      #1F1F1F;
+    /* Colors — Light Mode (Refined Monochrome Palette) */
+    --color-black:        #0A0A0A;
+    --color-black-2:      #1F1F23;
     --color-white:        #FFFFFF;
-    --color-off-white:    #F8F8F8;
-    --color-light-gray:   #F1F1F1;
-    --color-medium-gray:  #6B6B6B;
-    --color-border:       #E5E5E5;
-    --color-accent:       #2563EB;
-    --color-accent-light: #EFF6FF;
-    --color-danger:       #EF4444;
-    --color-success:      #22C55E;
+    --color-off-white:    #FAFAFC;
+    --color-light-gray:   #F2F2F5;
+    --color-medium-gray:  #52525B;
+    --color-border:       #E4E4E7;
+    --color-accent:       #0A0A0A;
+    --color-accent-light: #F4F4F6;
+    --color-danger:       #111111;
+    --color-success:      #111111;
 
-    /* Semantic color tokens — change for dark mode */
+    /* Semantic color tokens */
     --bg-page:            var(--color-off-white);
     --bg-card:            var(--color-white);
-    --bg-nav:             var(--color-white);
+    --bg-nav:             rgba(255, 255, 255, 0.92);
     --bg-sidebar:         var(--color-white);
     --bg-input:           var(--color-white);
     --bg-tag:             var(--color-light-gray);
     --text-primary:       var(--color-black);
     --text-secondary:     var(--color-medium-gray);
-    --text-muted:         #9CA3AF;
+    --text-muted:         #71717A;
     --border-color:       var(--color-border);
-    --shadow:             0 4px 15px rgba(0, 0, 0, 0.06);
-    --shadow-hover:       0 8px 30px rgba(0, 0, 0, 0.10);
+    --shadow:             0 2px 8px -1px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+    --shadow-hover:       0 12px 30px -4px rgba(0, 0, 0, 0.09);
     --nav-border:         var(--color-border);
 
     /* Typography */
-    --font-family:        'Inter', Arial, sans-serif;
+    --font-family:        'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
     /* Border radius */
     --radius-sm:          6px;
@@ -56,7 +56,7 @@
     --space-3xl:          64px;
 
     /* Transitions */
-    --transition:         all 0.2s ease;
+    --transition:         all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* -------------------------------------------------------
@@ -64,20 +64,24 @@
    Applied when the body has class "dark-mode"
    ------------------------------------------------------- */
 body.dark-mode {
-    --bg-page:            #0F0F0F;
-    --bg-card:            #1A1A1A;
-    --bg-nav:             #141414;
-    --bg-sidebar:         #1A1A1A;
-    --bg-input:           #222222;
-    --bg-tag:             #2A2A2A;
-    --text-primary:       #F0F0F0;
-    --text-secondary:     #9CA3AF;
-    --text-muted:         #6B6B6B;
-    --border-color:       #2A2A2A;
-    --shadow:             0 4px 15px rgba(0, 0, 0, 0.3);
-    --shadow-hover:       0 8px 30px rgba(0, 0, 0, 0.4);
-    --nav-border:         #2A2A2A;
-    --color-accent-light: #1E3A5F;
+    --color-black:        #FFFFFF;
+    --color-black-2:      #E4E4E7;
+    --color-white:        #09090B;
+    --color-accent:       #FFFFFF;
+    --color-accent-light: #202024;
+    --bg-page:            #09090B;
+    --bg-card:            #131316;
+    --bg-nav:             rgba(14, 14, 18, 0.92);
+    --bg-sidebar:         #131316;
+    --bg-input:           #1C1C20;
+    --bg-tag:             #202024;
+    --text-primary:       #FAFAFA;
+    --text-secondary:     #A1A1AA;
+    --text-muted:         #71717A;
+    --border-color:       #27272A;
+    --shadow:             0 4px 20px -2px rgba(0, 0, 0, 0.45);
+    --shadow-hover:       0 12px 32px -4px rgba(0, 0, 0, 0.65);
+    --nav-border:         #27272A;
 }
 
 /* -------------------------------------------------------
@@ -244,6 +248,8 @@ small {
     z-index: 1000;
     height: 64px;
     background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--nav-border);
     display: flex;
     align-items: center;
@@ -259,15 +265,39 @@ small {
 
 /* Logo */
 .nav-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: 22px;
     font-weight: 800;
     color: var(--text-primary);
     letter-spacing: -0.5px;
     flex-shrink: 0;
+    text-decoration: none;
+    line-height: 1;
 }
 
-.nav-logo:hover {
-    color: var(--color-accent);
+.nav-logo-img {
+    height: 32px;
+    width: auto;
+    max-width: 130px;
+    display: block;
+    object-fit: contain;
+    transition: opacity 0.2s ease, transform 0.2s ease, filter 0.3s ease;
+}
+
+body.dark-mode .nav-logo-img {
+    filter: invert(1);
+}
+
+.nav-logo:hover .nav-logo-img {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+
+.footer-brand .nav-logo-img {
+    height: 36px;
+    margin-bottom: 12px;
 }
 
 /* Nav links */
@@ -296,8 +326,8 @@ small {
 }
 
 .nav-link.active {
-    color: var(--color-accent);
-    background: var(--color-accent-light);
+    color: var(--text-primary);
+    background: var(--bg-tag);
     font-weight: 600;
 }
 
@@ -324,6 +354,7 @@ small {
     font-size: 14px;
     color: var(--text-primary);
     width: 200px;
+    transition: all 0.2s ease;
 }
 
 .nav-search input::placeholder {
@@ -332,8 +363,13 @@ small {
 
 .nav-search input:focus {
     width: 240px;
-    border-color: var(--color-accent);
+    border-color: var(--text-primary);
     background: var(--bg-input);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .nav-search input:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 .nav-search .search-icon {
@@ -637,8 +673,12 @@ body.dark-mode .btn-create:hover {
 }
 
 .hero-search:focus-within {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    border-color: var(--text-primary);
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+}
+
+body.dark-mode .hero-search:focus-within {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.12);
 }
 
 .hero-search i {
@@ -784,7 +824,7 @@ body.dark-mode .topic-chip.active {
 .post-card:hover {
     box-shadow: var(--shadow-hover);
     transform: translateY(-2px);
-    border-color: transparent;
+    border-color: var(--text-primary);
 }
 
 /* Post card with image at top */
@@ -1249,8 +1289,12 @@ body.dark-mode .btn-primary:hover {
 }
 
 .form-input:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--text-primary);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .form-input:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
 .form-input::placeholder {
@@ -2045,7 +2089,7 @@ body.dark-mode .explore-hero {
 .profile-cover {
     width: 100%;
     height: 180px;
-    background: linear-gradient(135deg, #111111 0%, #2563EB 100%);
+    background: linear-gradient(135deg, #0A0A0C 0%, #222228 100%);
     border-radius: var(--radius-md);
     margin-bottom: var(--space-lg);
     position: relative;

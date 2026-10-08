@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Page Not Found — OBlog</title>
+    <!-- Favicon / URL Icon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
+    <link rel="apple-touch-icon" href="images/oblog-icon.png">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .error-page {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .error-card {
+            max-width: 480px;
+            width: 100%;
+        }
+        .error-code {
+            font-size: 80px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -3px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        .error-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        .error-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+        .error-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--color-black);
+            color: var(--color-white);
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .error-btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+        body.dark-mode .error-btn {
+            background: var(--color-white);
+            color: var(--color-black);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <a href="index.html" class="nav-logo" aria-label="OBlog Home">
+                    <img src="images/oblog-logo.png" alt="OBlog" class="nav-logo-img">
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                    <li><a href="explore.html" class="nav-link"><i class="fa-solid fa-compass"></i> Explore</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="error-page" style="padding-top: 100px;">
+        <div class="error-card">
+            <div class="error-code">404</div>
+            <h1 class="error-title">Page Not Found</h1>
+            <p class="error-desc">The page you are looking for doesn't exist or has been moved. Discover ideas, stories, and conversations on OBlog.</p>
+            <a href="index.html" class="error-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
+        </div>
+    </main>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

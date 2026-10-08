@@ -1,43 +1,4 @@
 {
-  "version": 2,
   "cleanUrls": true,
-  "functions": {
-    "server.js": {
-      "includeFiles": [
-        "css/**",
-        "js/**",
-        "images/**",
-        "*.html",
-        "*.png",
-        "*.svg",
-        "*.ico",
-        "*.json"
-      ]
-    }
-  },
-  "routes": [
-    {
-      "src": "/css/(.*)",
-      "dest": "/css/$1"
-    },
-    {
-      "src": "/js/(.*)",
-      "dest": "/js/$1"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/images/$1"
-    },
-    {
-      "src": "/(favicon|oblog-logo|OBloglogo|favicon-64)\\.(.*)",
-      "dest": "/$1.$2"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/server.js"
-    }
-  ]
+  "trailingSlash": false
 }

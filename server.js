@@ -11,7 +11,12 @@ const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
 
 // Resolve directory candidates (local development and Vercel serverless /var/task)
-const candidates = [process.cwd(), __dirname];
+const candidates = [
+    path.join(__dirname, 'public'),
+    path.join(process.cwd(), 'public'),
+    process.cwd(),
+    __dirname
+];
 
 // Explicit static directories for assets
 candidates.forEach(dir => {

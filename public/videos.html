@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Watch developer videos and tutorials on OBlog.">
+    <title>Videos — OBlog</title>
+    <!-- Favicon / URL Icon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
+    <link rel="apple-touch-icon" href="images/oblog-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <a href="index.html" class="nav-logo" aria-label="OBlog Home">
+                    <img src="images/oblog-logo.png" alt="OBlog" class="nav-logo-img">
+                </a>
+                <ul class="nav-links" role="list">
+                    <li><a href="index.html"       class="nav-link"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+                    <li><a href="explore.html"     class="nav-link"><i class="fa-solid fa-compass" aria-hidden="true"></i> Explore</a></li>
+                    <li><a href="discussions.html" class="nav-link"><i class="fa-solid fa-comments" aria-hidden="true"></i> Discussions</a></li>
+                    <li><a href="videos.html"      class="nav-link active" aria-current="page"><i class="fa-solid fa-play" aria-hidden="true"></i> Videos</a></li>
+                    <li><a href="photos.html"      class="nav-link"><i class="fa-solid fa-image" aria-hidden="true"></i> Photos</a></li>
+                    <li><a href="login.html"    class="nav-link nav-link-login"    style="display:none;"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Log In</a></li>
+                    <li><a href="register.html" class="nav-link nav-link-register" style="display:none;"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
+                </ul>
+                <div class="nav-right">
+                    <div class="nav-search" role="search">
+                        <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+                        <input type="search" id="navSearchInput" placeholder="Search OBlog..." aria-label="Search posts">
+                    </div>
+                    <a href="create-post.html" class="btn-create" aria-label="Create a new post">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                        <span>Create</span>
+                    </a>
+                    <div class="notif-wrapper">
+                        <button class="nav-icon-btn" id="notifBtn" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                            <span class="notif-badge"></span>
+                        </button>
+                        <div class="notif-dropdown" id="notifDropdown" role="dialog" aria-label="Notifications">
+                            <div class="notif-header">
+                                <h4>Notifications</h4>
+                                <button class="notif-clear" id="notifClear">Mark all read</button>
+                            </div>
+                            <div id="notifList" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <button class="nav-icon-btn" id="themeToggle" aria-label="Switch to dark mode">
+                        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                    </button>
+                    <a href="profile.html" class="nav-avatar" aria-label="View your profile">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=currentuser" alt="Your profile">
+                    </a>
+                    <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+            <div class="mobile-search" role="search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="mobileSearchInput" placeholder="Search OBlog..." aria-label="Search posts">
+            </div>
+            <a href="index.html"       class="nav-link"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a>
+            <a href="explore.html"     class="nav-link"><i class="fa-solid fa-compass" aria-hidden="true"></i> Explore</a>
+            <a href="videos.html"      class="nav-link active"><i class="fa-solid fa-play" aria-hidden="true"></i> Videos</a>
+            <a href="photos.html"      class="nav-link"><i class="fa-solid fa-image" aria-hidden="true"></i> Photos</a>
+            <a href="create-post.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus" aria-hidden="true"></i> Create Post</a>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="page-wrapper">
+
+        <section class="page-hero" aria-labelledby="videosHeading">
+            <div class="container">
+                <h1 id="videosHeading">
+                    <i class="fa-solid fa-play" aria-hidden="true" style="color:var(--color-accent);"></i>
+                    Videos
+                </h1>
+                <p>Watch developer tutorials, talks, and project walkthroughs from the community.</p>
+            </div>
+        </section>
+
+        <div class="container layout-full">
+
+            <!-- Video grid — rendered by JavaScript below -->
+            <section aria-labelledby="videoGridHeading">
+                <h2 id="videoGridHeading" class="section-heading">
+                    <i class="fa-solid fa-film" aria-hidden="true"></i>
+                    All Videos
+                </h2>
+                <div id="videoGrid" class="video-grid" aria-label="Video list">
+                    <!-- Rendered by inline script -->
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo" aria-label="OBlog Home">
+                        <img src="images/oblog-logo.png" alt="OBlog" class="nav-logo-img">
+                    </a>
+                    <p class="footer-tagline">Write. Share. Connect.</p>
+                </div>
+                <div class="footer-col"><h4>OBlog</h4><nav class="footer-links"><a href="index.html">Home</a><a href="explore.html">Explore</a><a href="discussions.html">Discussions</a></nav></div>
+                <div class="footer-col"><h4>Account</h4><nav class="footer-links"><a href="profile.html">Profile</a><a href="create-post.html">Create Post</a></nav></div>
+                <div class="footer-col"><h4>Company</h4><nav class="footer-links"><a href="contact.html">Contact</a><a href="#">About</a><a href="#">Privacy</a></nav></div>
+            </div>
+            <div class="footer-bottom">
+                <span class="footer-copy">© 2026 OBlog. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
+        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/posts.js"></script>
+
+    <!-- Render video cards -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const grid = document.getElementById("videoGrid");
+            if (!grid || typeof videos === "undefined") return;
+
+            let html = "";
+
+            // Loop through each video in the data
+            videos.forEach(function (video) {
+
+                // Build the tags HTML
+                let tagsHTML = "";
+                video.tags.forEach(function (tag) {
+                    tagsHTML += `<span class="tag" style="font-size:11px;">#${tag}</span>`;
+                });
+
+                html += `
+                    <article class="video-card" aria-label="${video.title}">
+                        <div class="video-thumbnail">
+                            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+                            <!-- Play button overlay -->
+                            <div class="video-play-btn" aria-hidden="true">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                            <!-- Duration badge -->
+                            <span class="video-duration" aria-label="Duration: ${video.duration}">${video.duration}</span>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">${video.title}</h3>
+                            <div class="video-meta">
+                                <img
+                                    src="${video.avatar}"
+                                    alt="${video.author}"
+                                    style="width:20px; height:20px; border-radius:50%; object-fit:cover;"
+                                    loading="lazy"
+                                >
+                                ${video.author}
+                                <span class="video-meta-dot" aria-hidden="true"></span>
+                                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                ${video.views} views
+                                <span class="video-meta-dot" aria-hidden="true"></span>
+                                ${video.date}
+                            </div>
+                            <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:4px;">
+                                ${tagsHTML}
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+
+            grid.innerHTML = html;
+
+            // When a video card is clicked, show a message (no video backend)
+            grid.querySelectorAll(".video-card").forEach(function (card) {
+                card.addEventListener("click", function () {
+                    showToast("▶ Video playback coming soon!");
+                });
+                // Keyboard support
+                card.setAttribute("tabindex", "0");
+                card.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        showToast("▶ Video playback coming soon!");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

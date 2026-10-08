@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="500" height="200">
+  <g id="logo-mark" transform="translate(10, 10)">
+    <!-- Main O emblem -->
+    <path fill="#000000" fill-rule="evenodd" d="
+      M 90,0 
+      A 90,90 0 0 1 153.64,26.36 
+      L 141.5,47.4 
+      A 65,65 0 0 0 90,25 
+      L 90,60 
+      L 65,60 
+      L 65,25 
+      A 65,65 0 0 0 25,90 
+      L 0,90 
+      A 90,90 0 0 1 90,0 Z
+    "/>
+  </g>
+</svg>

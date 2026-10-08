@@ -1,0 +1,7 @@
+{
+  "name": "OBlog — Write. Share. Connect.",
+  "description": "OBlog — Write. Share. Connect. Discover ideas, stories and conversations from developers around you.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

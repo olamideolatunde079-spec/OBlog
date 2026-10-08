@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your OBlog profile — posts, saved content, and account settings.">
+    <title>Profile — OBlog</title>
+    <!-- Favicon / URL Icon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
+    <link rel="apple-touch-icon" href="images/oblog-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Edit Profile Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-hover);
+            position: relative;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 16px;
+            background: var(--bg-tag);
+            border: none;
+            cursor: pointer;
+        }
+        .modal-close:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+        .auth-error {
+            display: none;
+            font-size: 12px;
+            color: var(--color-danger);
+            margin-top: 4px;
+            gap: 4px;
+            align-items: center;
+        }
+        #editAvatarPreview {
+            display: none;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border-color);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <a href="index.html" class="nav-logo" aria-label="OBlog Home">
+                    <img src="images/oblog-logo.png" alt="OBlog" class="nav-logo-img">
+                </a>
+                <ul class="nav-links" role="list">
+                    <li><a href="index.html"       class="nav-link"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+                    <li><a href="explore.html"     class="nav-link"><i class="fa-solid fa-compass" aria-hidden="true"></i> Explore</a></li>
+                    <li><a href="discussions.html" class="nav-link"><i class="fa-solid fa-comments" aria-hidden="true"></i> Discussions</a></li>
+                    <li><a href="videos.html"      class="nav-link"><i class="fa-solid fa-play" aria-hidden="true"></i> Videos</a></li>
+                    <li><a href="photos.html"      class="nav-link"><i class="fa-solid fa-image" aria-hidden="true"></i> Photos</a></li>
+                    <li><a href="login.html"    class="nav-link nav-link-login"    style="display:none;"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Log In</a></li>
+                    <li><a href="register.html" class="nav-link nav-link-register" style="display:none;"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
+                </ul>
+                <div class="nav-right">
+                    <div class="nav-search" role="search">
+                        <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+                        <input type="search" id="navSearchInput" placeholder="Search OBlog..." aria-label="Search posts">
+                    </div>
+                    <a href="create-post.html" class="btn-create" aria-label="Create a new post">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                        <span>Create</span>
+                    </a>
+                    <div class="notif-wrapper">
+                        <button class="nav-icon-btn" id="notifBtn" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                            <span class="notif-badge" aria-label="Unread notifications"></span>
+                        </button>
+                        <div class="notif-dropdown" id="notifDropdown" role="dialog" aria-label="Notifications">
+                            <div class="notif-header">
+                                <h4>Notifications</h4>
+                                <button class="notif-clear" id="notifClear" aria-label="Clear all notifications">Mark all read</button>
+                            </div>
+                            <div id="notifList" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <button class="nav-icon-btn" id="themeToggle" aria-label="Switch to dark mode">
+                        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+                    </button>
+                    <a href="profile.html" class="nav-avatar" aria-label="View your profile">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=guest" alt="Your profile">
+                    </a>
+                    <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+            <div class="mobile-search" role="search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="mobileSearchInput" placeholder="Search OBlog..." aria-label="Search posts">
+            </div>
+            <a href="index.html"       class="nav-link"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a>
+            <a href="explore.html"     class="nav-link"><i class="fa-solid fa-compass" aria-hidden="true"></i> Explore</a>
+            <a href="discussions.html" class="nav-link"><i class="fa-solid fa-comments" aria-hidden="true"></i> Discussions</a>
+            <a href="create-post.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus" aria-hidden="true"></i> Create Post</a>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="page-wrapper">
+        <div class="container" style="padding-top:32px; padding-bottom:64px;" id="profilePageContainer">
+            <!-- Rendered dynamically by loadProfilePage() below -->
+            <div class="loading-state">
+                <i class="fa-solid fa-spinner" aria-hidden="true"></i>
+                Loading profile...
+            </div>
+        </div>
+    </main>
+
+    <!-- EDIT PROFILE MODAL -->
+    <div id="editProfileModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="modal-box">
+            <button class="modal-close" id="closeModalBtn" aria-label="Close edit profile">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+
+            <h2 class="modal-title" id="editModalTitle">
+                <i class="fa-solid fa-user-pen" aria-hidden="true" style="color:var(--color-accent);"></i>
+                Edit Profile
+            </h2>
+
+            <form id="editProfileForm" novalidate>
+
+                <div class="form-group">
+                    <label class="form-label" for="editName">Full Name</label>
+                    <input type="text" id="editName" class="form-input" placeholder="Your full name" autocomplete="name">
+                    <span id="editNameError" class="auth-error" role="alert">
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="editUsername">Username</label>
+                    <div style="position:relative;">
+                        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;pointer-events:none;">@</span>
+                        <input type="text" id="editUsername" class="form-input" placeholder="yourhandle" style="padding-left:28px;" autocomplete="username">
+                    </div>
+                    <span id="editUsernameError" class="auth-error" role="alert">
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="editBio">Bio</label>
+                    <textarea id="editBio" class="form-input form-textarea" rows="3"
+                        placeholder="Tell people a little about yourself..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="editLocation">Location</label>
+                    <input type="text" id="editLocation" class="form-input" placeholder="e.g. Lagos, Nigeria" autocomplete="address-level2">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Profile Picture</label>
+
+                    <!-- Option 1: upload a file from device -->
+                    <label class="form-label" for="editAvatarFile"
+                           style="font-weight:500;font-size:13px;margin-bottom:4px;display:block;">
+                        Upload from device
+                    </label>
+                    <input type="file" id="editAvatarFile" class="form-input"
+                           accept="image/*" style="padding:6px;"
+                           aria-label="Upload profile picture from device">
+                    <span class="form-hint">JPG, PNG, GIF or WebP. Max 2 MB recommended.</span>
+
+                    <!-- Option 2: paste a URL -->
+                    <label class="form-label" for="editAvatar"
+                           style="font-weight:500;font-size:13px;margin-top:10px;display:block;">
+                        Or paste an image URL
+                    </label>
+                    <input type="url" id="editAvatar" class="form-input"
+                           placeholder="https://example.com/your-photo.jpg"
+                           aria-label="Profile picture URL">
+
+                    <!-- Preview -->
+                    <img id="editAvatarPreview" src="" alt="Avatar preview" loading="lazy"
+                         style="display:none; width:72px; height:72px; border-radius:50%;
+                                object-fit:cover; border:3px solid var(--border-color); margin-top:10px;">
+                </div>
+
+                <div style="display:flex; gap:10px; padding-top:8px; border-top:1px solid var(--border-color); margin-top:8px;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                        Save Changes
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="closeModalBtn2">
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo" aria-label="OBlog Home">
+                        <img src="images/oblog-logo.png" alt="OBlog" class="nav-logo-img">
+                    </a>
+                    <p class="footer-tagline">Write. Share. Connect.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col"><h4>OBlog</h4><nav class="footer-links"><a href="index.html">Home</a><a href="explore.html">Explore</a><a href="discussions.html">Discussions</a></nav></div>
+                <div class="footer-col"><h4>Account</h4><nav class="footer-links"><a href="profile.html">Profile</a><a href="create-post.html">Create Post</a></nav></div>
+                <div class="footer-col"><h4>Company</h4><nav class="footer-links"><a href="contact.html">Contact</a><a href="#">About</a><a href="#">Privacy</a></nav></div>
+            </div>
+            <div class="footer-bottom">
+                <span class="footer-copy">© 2026 OBlog. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top">
+        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <!-- Scripts — auth.js MUST be first -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/posts.js"></script>
+
+    <script>
+    // ============================================================
+    // profile.html inline script
+    // Supports viewing ANY user's profile via ?id=userId in the URL.
+    // If no ?id= is given, shows the currently logged-in user.
+    // Only the logged-in user sees Edit Profile / Logout.
+    // ============================================================
+
+    // ---- Simple HTML escape ----
+    function escapeHTML(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // -------------------------------------------------------
+    // loadProfilePage()
+    // Reads ?id= from URL to decide WHICH user to display.
+    // Falls back to the logged-in user if no ?id= is present.
+    // -------------------------------------------------------
+    function loadProfilePage() {
+        const container = document.getElementById("profilePageContainer");
+        if (!container) return;
+
+        // --- Determine which user to show ---
+        // getUrlParam is defined in app.js (window.getUrlParam)
+        const urlId       = typeof getUrlParam === "function" ? getUrlParam("id") : null;
+        const loggedIn    = getCurrentUser();
+        const allUsers    = getUsers();
+
+        // If ?id= is in the URL, find that user; otherwise show the logged-in user
+        let profileUser;
+        if (urlId) {
+            profileUser = allUsers.find(function (u) { return u.id === urlId; });
+        } else {
+            profileUser = loggedIn;
+        }
+
+        // Nobody to show
+        if (!profileUser) {
+            container.innerHTML = `
+                <div class="empty-state" style="margin-top:40px;">
+                    <i class="fa-solid fa-user-lock" aria-hidden="true"></i>
+                    <h3>${urlId ? "User not found" : "You are not logged in"}</h3>
+                    <p>${urlId ? "This user does not exist." : "Please log in or create an account."}</p>
+                    <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap;">
+                        <a href="login.html"    class="btn btn-primary"><i class="fa-solid fa-right-to-bracket"></i> Log In</a>
+                        <a href="register.html" class="btn btn-secondary"><i class="fa-solid fa-user-plus"></i> Create Account</a>
+                    </div>
+                </div>`;
+            return;
+        }
+
+        // --- Is the logged-in user viewing their OWN profile? ---
+        const isOwnProfile = loggedIn && loggedIn.id === profileUser.id;
+
+        // --- Compute stats from live data ---
+        const allPosts      = getStoredPosts();
+        const profilePosts  = allPosts.filter(function (p) {
+            return p.authorId === profileUser.id && (p.status === "published" || !p.status);
+        });
+        const followerCount  = Array.isArray(profileUser.followers) ? profileUser.followers.length  : 0;
+        const followingCount = Array.isArray(profileUser.following)  ? profileUser.following.length  : 0;
+
+        // --- Skills tags ---
+        const skillsArr  = Array.isArray(profileUser.skills) ? profileUser.skills : [];
+        let   skillsHTML = "";
+        skillsArr.forEach(function (skill) {
+            skillsHTML += `<span class="tag">${skill}</span>`;
+        });
+        if (!skillsHTML) skillsHTML = `<span style="font-size:13px;color:var(--text-muted);">No skills listed yet.</span>`;
+
+        // --- Follow button (shown to logged-in visitors on other profiles) ---
+        let actionBtnsHTML = "";
+        if (isOwnProfile) {
+            // Own profile: show Edit + Write Post + Logout
+            actionBtnsHTML = `
+                <a href="create-post.html" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-pen" aria-hidden="true"></i> Write a Post
+                </a>
+                <button class="btn btn-secondary btn-sm" id="editProfileBtn">
+                    <i class="fa-solid fa-user-pen" aria-hidden="true"></i> Edit Profile
+                </button>
+                <button class="btn btn-secondary btn-sm" id="logoutBtnProfile"
+                    style="color:var(--color-danger);border-color:var(--color-danger);">
+                    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Log Out
+                </button>`;
+        } else if (loggedIn) {
+            // Viewing someone else's profile while logged in
+            const isFollowing = Array.isArray(loggedIn.following) && loggedIn.following.includes(profileUser.id);
+            const followLabel = isFollowing ? "Following" : "Follow";
+            const followClass = isFollowing ? "following" : "";
+            actionBtnsHTML = `
+                <button class="btn btn-primary btn-sm" id="profileFollowBtn"
+                    data-author-id="${profileUser.id}"
+                    aria-pressed="${isFollowing}"
+                    aria-label="${followLabel} ${profileUser.name}">
+                    ${isFollowing ? '<i class="fa-solid fa-user-check" aria-hidden="true"></i>' : '<i class="fa-solid fa-user-plus" aria-hidden="true"></i>'}
+                    <span id="followBtnText">${followLabel}</span>
+                </button>`;
+        }
+        // Guest (not logged in) viewing someone else: no action buttons
+
+        // --- Tabs: own profile gets Saved tab; others don't ---
+        const savedTabHTML = isOwnProfile ? `
+            <button class="profile-tab" data-tab="tab-saved" role="tab" aria-selected="false" aria-controls="tab-saved">
+                <i class="fa-solid fa-bookmark" aria-hidden="true"></i> Saved
+            </button>` : "";
+
+        const savedPanelHTML = isOwnProfile ? `
+            <div id="tab-saved" class="profile-tab-content" role="tabpanel" aria-label="Saved posts">
+                <div id="profileSavedFeed" class="post-feed"></div>
+            </div>` : "";
+
+        // --- Render the profile ---
+        container.innerHTML = `
+            <div class="profile-header" id="profileHeader">
+                <div class="profile-cover" aria-hidden="true"></div>
+                <img
+                    id="profileAvatar"
+                    class="profile-avatar"
+                    src="${profileUser.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + profileUser.username}"
+                    alt="${profileUser.name}"
+                >
+                <h1 class="profile-name" id="profileName">${profileUser.name}</h1>
+                <p class="profile-username" id="profileUsername">@${profileUser.username}</p>
+                <p class="profile-bio" id="profileBio">${profileUser.bio || (isOwnProfile ? "No bio yet. Click Edit Profile to add one." : "")}</p>
+
+                <div class="profile-skills" id="profileSkills" aria-label="Skills">${skillsHTML}</div>
+
+                <div class="profile-stats" role="list" aria-label="Profile statistics">
+                    <div class="author-stat" role="listitem">
+                        <span class="profile-stat-number" id="statFollowers">${followerCount}</span>
+                        <span class="profile-stat-label">Followers</span>
+                    </div>
+                    <div class="author-stat" role="listitem">
+                        <span class="profile-stat-number" id="statFollowing">${followingCount}</span>
+                        <span class="profile-stat-label">Following</span>
+                    </div>
+                    <div class="author-stat" role="listitem">
+                        <span class="profile-stat-number" id="statPosts">${profilePosts.length}</span>
+                        <span class="profile-stat-label">Posts</span>
+                    </div>
+                </div>
+
+                <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+                    ${actionBtnsHTML}
+                </div>
+            </div>
+
+            <!-- PROFILE TABS -->
+            <div role="tablist" aria-label="Profile sections">
+                <div class="profile-tabs">
+                    <button class="profile-tab active" data-tab="tab-posts" role="tab" aria-selected="true" aria-controls="tab-posts">
+                        <i class="fa-solid fa-file-lines" aria-hidden="true"></i> Posts
+                    </button>
+                    ${savedTabHTML}
+                    <button class="profile-tab" data-tab="tab-comments" role="tab" aria-selected="false" aria-controls="tab-comments">
+                        <i class="fa-solid fa-comments" aria-hidden="true"></i> Comments
+                    </button>
+                    <button class="profile-tab" data-tab="tab-about" role="tab" aria-selected="false" aria-controls="tab-about">
+                        <i class="fa-solid fa-circle-info" aria-hidden="true"></i> About
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB: POSTS -->
+            <div id="tab-posts" class="profile-tab-content active" role="tabpanel" aria-label="${isOwnProfile ? "Your" : profileUser.name + "'s"} posts">
+                <div id="profilePostsFeed" class="post-feed"></div>
+            </div>
+
+            ${savedPanelHTML}
+
+            <!-- TAB: COMMENTS -->
+            <div id="tab-comments" class="profile-tab-content" role="tabpanel" aria-label="Comments">
+                <div id="profileCommentsList" class="comment-list"></div>
+            </div>
+
+            <!-- TAB: ABOUT -->
+            <div id="tab-about" class="profile-tab-content" role="tabpanel" aria-label="About">
+                <div class="about-grid">
+                    <div class="about-item">
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                        <div>
+                            <span class="about-item-label">Location</span>
+                            <span class="about-item-value">${profileUser.location || "Not specified"}</span>
+                        </div>
+                    </div>
+                    <div class="about-item">
+                        <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+                        <div>
+                            <span class="about-item-label">Joined</span>
+                            <span class="about-item-value">${profileUser.createdAt ? new Date(profileUser.createdAt).toLocaleDateString("en-GB",{month:"long",year:"numeric"}) : "Recently"}</span>
+                        </div>
+                    </div>
+                    ${isOwnProfile ? `
+                    <div class="about-item">
+                        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                        <div>
+                            <span class="about-item-label">Email</span>
+                            <span class="about-item-value">${profileUser.email}</span>
+                        </div>
+                    </div>` : ""}
+                    <div class="about-item">
+                        <i class="fa-solid fa-at" aria-hidden="true"></i>
+                        <div>
+                            <span class="about-item-label">Username</span>
+                            <span class="about-item-value">@${profileUser.username}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:24px;">
+                    <h3 style="font-size:18px;margin-bottom:12px;">Bio</h3>
+                    <p style="font-size:15px;line-height:1.7;color:var(--text-secondary);">${profileUser.bio || "No bio yet."}</p>
+                </div>
+            </div>
+        `;
+
+        // ---- Wire up profile tabs ----
+        initProfileTabs();
+
+        // ---- Wire up Follow button (other profiles) ----
+        const followBtn = document.getElementById("profileFollowBtn");
+        if (followBtn) {
+            followBtn.addEventListener("click", function () {
+                const authorId  = followBtn.getAttribute("data-author-id");
+                const textSpan  = document.getElementById("followBtnText");
+                const iconEl    = followBtn.querySelector("i");
+
+                // Use the existing toggleFollow from interactions.js
+                if (typeof toggleFollow === "function") {
+                    toggleFollow(authorId, {
+                        // toggleFollow expects a btn element with textContent and classList
+                        // We pass a proxy object that mimics a button
+                        textContent: textSpan ? textSpan.textContent : "",
+                        classList: {
+                            contains: function (c) { return followBtn.classList.contains(c); },
+                            add:      function (c) { followBtn.classList.add(c); },
+                            remove:   function (c) { followBtn.classList.remove(c); }
+                        },
+                        setAttribute: function (k, v) { followBtn.setAttribute(k, v); },
+                        set textContent(v) {
+                            if (textSpan) {
+                                textSpan.textContent = v;
+                                // Also update the icon
+                                if (iconEl) {
+                                    iconEl.className = v === "Following"
+                                        ? "fa-solid fa-user-check"
+                                        : "fa-solid fa-user-plus";
+                                }
+                            }
+                        }
+                    });
+
+                    // Reload stats to show updated follower count
+                    setTimeout(function () {
+                        const freshUser = getUsers().find(function (u) { return u.id === profileUser.id; });
+                        if (freshUser) {
+                            const statEl = document.getElementById("statFollowers");
+                            if (statEl) statEl.textContent = Array.isArray(freshUser.followers) ? freshUser.followers.length : 0;
+                        }
+                    }, 100);
+                }
+            });
+        }
+
+        // ---- Wire up Edit Profile button (own profile only) ----
+        const editBtn = document.getElementById("editProfileBtn");
+        if (editBtn) {
+            editBtn.addEventListener("click", openEditProfileModal);
+        }
+
+        // ---- Wire up second close button in modal ----
+        const closeBtn2 = document.getElementById("closeModalBtn2");
+        if (closeBtn2) {
+            closeBtn2.addEventListener("click", function () {
+                const modal = document.getElementById("editProfileModal");
+                if (modal) modal.style.display = "none";
+            });
+        }
+
+        // ---- Wire up Logout button (own profile only) ----
+        const logoutProfileBtn = document.getElementById("logoutBtnProfile");
+        if (logoutProfileBtn) {
+            logoutProfileBtn.addEventListener("click", function () {
+                if (confirm("Are you sure you want to log out?")) logoutUser();
+            });
+        }
+
+        // ---- Populate tabs ----
+        populatePostsTab(profileUser, profilePosts, isOwnProfile);
+        if (isOwnProfile) populateSavedTab(profileUser);
+        populateCommentsTab(profileUser);
+
+        // ---- Photos tab (own profile) ----
+        if (isOwnProfile) populatePhotosTab(profileUser);
+    }
+
+    // ---- POSTS TAB ----
+    function populatePostsTab(user, userPosts, isOwn) {
+        const feed = document.getElementById("profilePostsFeed");
+        if (!feed) return;
+
+        if (userPosts.length === 0) {
+            feed.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-file-lines" aria-hidden="true"></i>
+                    <h3>No posts yet</h3>
+                    <p>${isOwn ? "You haven't published any posts. Start writing!" : "This user hasn't published any posts yet."}</p>
+                    ${isOwn ? `<a href="create-post.html" class="btn btn-primary" style="margin-top:16px;">
+                        <i class="fa-solid fa-pen" aria-hidden="true"></i> Write Your First Post</a>` : ""}
+                </div>`;
+            return;
+        }
+
+        let html = "";
+        userPosts.forEach(function (post) { html += buildPostCard(post); });
+        feed.innerHTML = html;
+
+        feed.querySelectorAll(".post-card").forEach(function (card) {
+            card.addEventListener("click", function (event) {
+                if (event.target.closest("button") || event.target.closest("a")) return;
+                window.location.href = "post.html?id=" + card.getAttribute("data-post-id");
+            });
+        });
+
+        attachInteractionHandlers();
+    }
+
+    // ---- SAVED TAB (own profile only) ----
+    function populateSavedTab(user) {
+        const feed = document.getElementById("profileSavedFeed");
+        if (!feed) return;
+
+        const allSaved = JSON.parse(localStorage.getItem("oblogSavedPosts")) || [];
+        const savedIds = allSaved
+            .filter(function (s) { return s.userId === user.id; })
+            .map(function (s) { return s.postId; });
+
+        if (savedIds.length === 0) {
+            feed.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-bookmark" aria-hidden="true"></i>
+                    <h3>No saved posts yet</h3>
+                    <p>Start exploring OBlog and save posts you love.</p>
+                    <a href="index.html" class="btn btn-primary" style="margin-top:16px;">Explore Posts</a>
+                </div>`;
+            return;
+        }
+
+        const allPosts   = getStoredPosts();
+        const savedPosts = allPosts.filter(function (p) {
+            return savedIds.some(function (id) { return id == p.id; });
+        });
+
+        if (savedPosts.length === 0) {
+            feed.innerHTML = `<div class="empty-state"><i class="fa-regular fa-bookmark" aria-hidden="true"></i><h3>Saved posts not found</h3></div>`;
+            return;
+        }
+
+        let html = "";
+        savedPosts.forEach(function (post) { html += buildPostCard(post); });
+        feed.innerHTML = html;
+
+        feed.querySelectorAll(".post-card").forEach(function (card) {
+            card.addEventListener("click", function (event) {
+                if (event.target.closest("button") || event.target.closest("a")) return;
+                window.location.href = "post.html?id=" + card.getAttribute("data-post-id");
+            });
+        });
+
+        attachInteractionHandlers();
+    }
+
+    // ---- COMMENTS TAB ----
+    function populateCommentsTab(user) {
+        const container = document.getElementById("profileCommentsList");
+        if (!container) return;
+
+        const allPosts     = getStoredPosts();
+        const userComments = [];
+
+        allPosts.forEach(function (post) {
+            if (!Array.isArray(post.comments)) return;
+            post.comments.forEach(function (comment) {
+                if (comment.userId === user.id) {
+                    userComments.push({ post: post, comment: comment });
+                }
+            });
+        });
+
+        if (userComments.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-comment" aria-hidden="true"></i>
+                    <h3>No comments yet</h3>
+                    <p>Start reading posts and join the conversation!</p>
+                    <a href="index.html" class="btn btn-primary" style="margin-top:16px;">Browse Posts</a>
+                </div>`;
+            return;
+        }
+
+        // Always read the freshest user data for the avatar
+        const freshUser = getUsers().find(function (u) { return u.id === user.id; }) || user;
+
+        let html = "";
+        userComments.forEach(function (item) {
+            const timeDisplay = formatTimeAgo(item.comment.createdAt);
+            html += `
+                <div class="comment-item">
+                    <img class="comment-avatar"
+                         src="${freshUser.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + freshUser.username}"
+                         alt="${freshUser.name}" loading="lazy">
+                    <div class="comment-body">
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                            <span class="comment-author">${freshUser.name}</span>
+                            <span class="comment-time">${timeDisplay}</span>
+                            <a href="post.html?id=${item.post.id}"
+                               style="font-size:12px;color:var(--color-accent);margin-left:4px;font-weight:500;">
+                                On: "${escapeHTML(item.post.title)}" →
+                            </a>
+                        </div>
+                        <p class="comment-text">${escapeHTML(item.comment.text)}</p>
+                    </div>
+                </div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // ---- PHOTOS TAB (own profile — shows uploaded photos from oblogPhotos) ----
+    function populatePhotosTab(user) {
+        // Only runs if there is a #tab-photos panel in the DOM
+        const panel = document.getElementById("tab-photos");
+        if (!panel) return;
+
+        const allPhotos   = JSON.parse(localStorage.getItem("oblogPhotos")) || [];
+        const userPhotos  = allPhotos.filter(function (ph) { return ph.userId === user.id; });
+
+        if (userPhotos.length === 0) {
+            panel.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-image" aria-hidden="true"></i>
+                    <h3>No photos yet</h3>
+                    <p>Upload your first photo from the <a href="photos.html" style="color:var(--color-accent);">Photos page</a>.</p>
+                </div>`;
+            return;
+        }
+
+        let html = '<div class="photo-grid">';
+        userPhotos.forEach(function (ph) {
+            html += `
+                <div class="photo-item">
+                    <img src="${ph.image}" alt="${escapeHTML(ph.caption || "Photo")}" loading="lazy">
+                    <div class="photo-overlay">
+                        <span class="photo-overlay-title">${escapeHTML(ph.caption || "")}</span>
+                        <div class="photo-overlay-author">
+                            <img src="${user.avatar || ""}" alt="${user.name}" loading="lazy">
+                            ${user.name}
+                        </div>
+                    </div>
+                </div>`;
+        });
+        html += "</div>";
+        panel.innerHTML = html;
+    }
+
+    // -------------------------------------------------------
+    // Initialise profile page on DOM ready
+    // -------------------------------------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+        loadProfilePage();
+        // Make it global so auth.js can call it after profile edit saves
+        window.loadProfilePage = loadProfilePage;
+    });
+    </script>
+
+</body>
+</html>

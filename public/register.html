@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create a free OBlog account and start writing today.">
+    <title>Create Account — OBlog</title>
+    <!-- Favicon / URL Icon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
+    <link rel="apple-touch-icon" href="images/oblog-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background: var(--bg-page);
+        }
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: var(--shadow);
+        }
+        .auth-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            text-decoration: none;
+        }
+        .auth-logo-img {
+            height: 42px;
+            width: auto;
+            display: block;
+            transition: filter 0.3s ease;
+        }
+        body.dark-mode .auth-logo-img {
+            filter: invert(1);
+        }
+        .auth-tagline {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+        .auth-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        .auth-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+        .auth-error {
+            display: none;
+            font-size: 12px;
+            color: var(--color-danger);
+            margin-top: 4px;
+            gap: 4px;
+            align-items: center;
+        }
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .auth-divider::before,
+        .auth-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+        .auth-switch {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 20px;
+        }
+        .auth-switch a {
+            color: var(--color-accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-switch a:hover { text-decoration: underline; }
+        .show-password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 15px;
+            padding: 4px;
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper .form-input {
+            padding-right: 42px;
+        }
+        .password-strength {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .strength-bar {
+            height: 3px;
+            flex: 1;
+            border-radius: 2px;
+            background: var(--border-color);
+            transition: background 0.2s;
+        }
+        .strength-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+        .disclaimer {
+            background: var(--bg-tag);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-top: 20px;
+        }
+        @media (max-width: 480px) {
+            .auth-card { padding: 28px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-page">
+        <div class="auth-card">
+
+            <!-- Logo -->
+            <a href="index.html" class="auth-logo" aria-label="OBlog Home">
+                <img src="images/oblog-logo.png" alt="OBlog" class="auth-logo-img">
+            </a>
+            <p class="auth-tagline">Write. Share. Connect.</p>
+
+            <h1 class="auth-title">Create your account</h1>
+            <p class="auth-subtitle">Join OBlog — it's completely free.</p>
+
+            <!-- REGISTER FORM -->
+            <form id="registerForm" novalidate>
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label class="form-label" for="regName">
+                        Full Name <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="regName"
+                        class="form-input"
+                        placeholder="e.g. Olamide Olatunde"
+                        autocomplete="name"
+                        required
+                        aria-required="true"
+                        aria-describedby="regNameError"
+                    >
+                    <span id="regNameError" class="auth-error" role="alert">
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label class="form-label" for="regUsername">
+                        Username <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <div style="position:relative;">
+                        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;pointer-events:none;">@</span>
+                        <input
+                            type="text"
+                            id="regUsername"
+                            class="form-input"
+                            placeholder="yourhandle"
+                            autocomplete="username"
+                            required
+                            aria-required="true"
+                            aria-describedby="regUsernameError"
+                            style="padding-left:28px;"
+                        >
+                    </div>
+                    <span id="regUsernameHint" class="form-hint">Letters, numbers, and underscores only.</span>
+                    <span id="regUsernameError" class="auth-error" role="alert">
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label" for="regEmail">
+                        Email Address <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <input
+                        type="email"
+                        id="regEmail"
+                        class="form-input"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
+                        aria-required="true"
+                        aria-describedby="regEmailError"
+                    >
+                    <span id="regEmailError" class="auth-error" role="alert">
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label class="form-label" for="regPassword">
+                        Password <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input
+                            type="password"
+                            id="regPassword"
+                            class="form-input"
+                            placeholder="Minimum 6 characters"
+                            autocomplete="new-password"
+                            required
+                            aria-required="true"
+                            aria-describedby="regPasswordError"
+                        >
+                        <button type="button" class="show-password-toggle"
+                            aria-label="Show or hide password"
+                            onclick="togglePasswordVisibility('regPassword', this)">
+                            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- Password strength indicator -->
+                    <div class="password-strength" aria-hidden="true">
+                        <div class="strength-bar" id="strengthBar1"></div>
+                        <div class="strength-bar" id="strengthBar2"></div>
+                        <div class="strength-bar" id="strengthBar3"></div>
+                        <div class="strength-bar" id="strengthBar4"></div>
+                    </div>
+                    <span id="strengthLabel" class="strength-label"></span>
+                    <span id="regPasswordError" class="auth-error" role="alert">
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label class="form-label" for="regConfirmPassword">
+                        Confirm Password <span class="required" aria-hidden="true">*</span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input
+                            type="password"
+                            id="regConfirmPassword"
+                            class="form-input"
+                            placeholder="Repeat your password"
+                            autocomplete="new-password"
+                            required
+                            aria-required="true"
+                            aria-describedby="regConfirmPasswordError"
+                        >
+                        <button type="button" class="show-password-toggle"
+                            aria-label="Show or hide password confirmation"
+                            onclick="togglePasswordVisibility('regConfirmPassword', this)">
+                            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <span id="regConfirmPasswordError" class="auth-error" role="alert">
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full btn-lg" style="margin-top:8px;">
+                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+                    Create Account
+                </button>
+
+            </form>
+
+            <div class="auth-divider">or</div>
+
+            <div class="auth-switch">
+                Already have an account? <a href="login.html">Log in</a>
+            </div>
+
+            <div style="text-align:center; margin-top:12px;">
+                <a href="index.html" style="font-size:13px; color:var(--text-muted);">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    Continue browsing as guest
+                </a>
+            </div>
+
+            <!-- Educational disclaimer -->
+            <div class="disclaimer" role="note">
+                <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                OBlog uses browser localStorage to simulate accounts for educational purposes.
+                Your data is stored locally in this browser and is not sent to any server.
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Theme toggle -->
+    <button id="themeToggle" class="scroll-top" style="bottom:24px;right:24px;opacity:1;pointer-events:all;"
+            aria-label="Switch to dark mode">
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+    </button>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Show/hide password
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            if (input.type === "password") {
+                input.type = "text";
+                btn.innerHTML = '<i class="fa-regular fa-eye-slash" aria-hidden="true"></i>';
+                btn.setAttribute("aria-label", "Hide password");
+            } else {
+                input.type = "password";
+                btn.innerHTML = '<i class="fa-regular fa-eye" aria-hidden="true"></i>';
+                btn.setAttribute("aria-label", "Show password");
+            }
+        }
+
+        // Password strength meter
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Redirect if already logged in
+            if (typeof requireGuest === "function") requireGuest();
+
+            const passwordInput = document.getElementById("regPassword");
+            const bars          = [
+                document.getElementById("strengthBar1"),
+                document.getElementById("strengthBar2"),
+                document.getElementById("strengthBar3"),
+                document.getElementById("strengthBar4")
+            ];
+            const label = document.getElementById("strengthLabel");
+
+            if (passwordInput) {
+                passwordInput.addEventListener("input", function () {
+                    const val      = passwordInput.value;
+                    let score      = 0;
+
+                    if (val.length >= 6)  score++;
+                    if (val.length >= 10) score++;
+                    if (/[A-Z]/.test(val) || /[0-9]/.test(val)) score++;
+                    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+                    const colors = ["#EF4444", "#F97316", "#EAB308", "#22C55E"];
+                    const labels = ["Weak", "Fair", "Good", "Strong"];
+
+                    bars.forEach(function (bar, i) {
+                        bar.style.background = i < score ? colors[score - 1] : "var(--border-color)";
+                    });
+
+                    if (label) {
+                        label.textContent = val.length === 0 ? "" : labels[score - 1] || "Weak";
+                        label.style.color = score > 0 ? colors[score - 1] : "var(--text-muted)";
+                    }
+                });
+            }
+
+            // Live username availability check
+            const usernameInput = document.getElementById("regUsername");
+            const usernameError = document.getElementById("regUsernameError");
+
+            if (usernameInput) {
+                usernameInput.addEventListener("input", function () {
+                    const val   = usernameInput.value.trim().toLowerCase();
+                    if (!val || !usernameError) return;
+
+                    const users = typeof getUsers === "function" ? getUsers() : [];
+                    const taken = users.some(function (u) { return u.username.toLowerCase() === val; });
+
+                    if (taken) {
+                        usernameError.textContent   = "Username already taken.";
+                        usernameError.style.display = "flex";
+                    } else {
+                        usernameError.style.display = "none";
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

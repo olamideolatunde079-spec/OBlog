@@ -1294,7 +1294,10 @@ function escapeHTML(text) {
 // INIT ON PAGE LOAD
 // -------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
-    const page = window.location.pathname.split("/").pop() || "index.html";
+    // Use getCurrentPageName() from app.js which handles cleanUrls (.html stripping)
+    var page = typeof getCurrentPageName === "function"
+        ? getCurrentPageName()
+        : (window.location.pathname.split("/").pop() || "index.html");
 
     if (page === "post.html")         initPostPage();
     if (page === "create-post.html")  initCreatePost();

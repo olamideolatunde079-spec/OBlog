@@ -120,6 +120,12 @@ function buildPostCard(post) {
 
                 <h2 class="post-title">${post.title}</h2>
                 <p class="post-description">${post.description || ""}</p>
+                <a href="post.html?id=${post.id}"
+                   class="post-read-more"
+                   onclick="event.stopPropagation();"
+                   aria-label="Read full article: ${post.title}">
+                   Read More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
                 <div class="post-tags">${tagsHTML}</div>
 
                 <div class="post-footer">
@@ -628,7 +634,11 @@ function buildMiniPostCard(post) {
 // INIT ON PAGE LOAD
 // -------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
-    const page = window.location.pathname.split("/").pop() || "index.html";
+    // Use getCurrentPageName() from app.js to handle Vercel cleanUrls
+    // (URLs like /post instead of /post.html)
+    var page = typeof getCurrentPageName === "function"
+        ? getCurrentPageName()
+        : (window.location.pathname.split("/").pop() || "index.html");
 
     if (page === "index.html" || page === "") {
         initHomeFeed();
@@ -640,7 +650,7 @@ document.addEventListener("DOMContentLoaded", function () {
         initExplorePage();
     }
 
-    // Populate trending topics sidebar on post.html
+    // Populate trending topics sidebar on the post detail page
     if (page === "post.html") {
         const trendingContainer = document.getElementById("sidebarTrendingTopics");
         if (trendingContainer && typeof topics !== "undefined") {

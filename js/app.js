@@ -60,58 +60,125 @@ function updateThemeIcon(isDark) {
 }
 
 // -------------------------------------------------------
-// MOBILE NAVIGATION (hamburger menu)
+// MOBILE NAVIGATION — side drawer
 // -------------------------------------------------------
 
 // Find the hamburger button and the mobile menu
 const hamburgerBtn = document.getElementById("hamburgerBtn");
 const mobileMenu   = document.getElementById("mobileMenu");
 
+// Create and inject a backdrop element for the side drawer
+var mobileBackdrop = document.getElementById("mobileMenuBackdrop");
+if (!mobileBackdrop) {
+    mobileBackdrop = document.createElement("div");
+    mobileBackdrop.id        = "mobileMenuBackdrop";
+    mobileBackdrop.className = "mobile-menu-backdrop";
+    mobileBackdrop.setAttribute("aria-hidden", "true");
+    document.body.appendChild(mobileBackdrop);
+}
+
+// Inject the drawer header (logo + close button) if not already there
+if (mobileMenu && !mobileMenu.querySelector(".mobile-menu-header")) {
+    var drawerHeader = document.createElement("div");
+    drawerHeader.className = "mobile-menu-header";
+    drawerHeader.innerHTML =
+        '<a href="index.html" class="mobile-menu-logo" aria-label="OBlog home">OBlog</a>' +
+        '<button class="mobile-menu-close" id="mobileMenuCloseBtn" aria-label="Close navigation menu">' +
+        '<i class="fa-solid fa-xmark" aria-hidden="true"></i>' +
+        '</button>';
+    mobileMenu.insertBefore(drawerHeader, mobileMenu.firstChild);
+}
+
 if (hamburgerBtn && mobileMenu) {
 
-    // When hamburger is clicked, toggle the mobile menu open/closed
+    // When hamburger is clicked, toggle the drawer open/closed
     hamburgerBtn.addEventListener("click", function () {
         const isOpen = mobileMenu.classList.contains("open");
-
         if (isOpen) {
             closeMobileMenu();
         } else {
             openMobileMenu();
         }
     });
+}
 
-    // Close the menu when clicking outside of it
-    document.addEventListener("click", function (event) {
-        const clickedInsideNav   = event.target.closest(".navbar");
-        const clickedInsideMenu  = event.target.closest(".mobile-menu");
+// Close when backdrop is clicked
+if (mobileBackdrop) {
+    mobileBackdrop.addEventListener("click", function () {
+        closeMobileMenu();
+    });
+}
 
-        if (!clickedInsideNav && !clickedInsideMenu) {
-            closeMobileMenu();
-        }
+// Close when the X button inside the drawer is clicked
+document.addEventListener("click", function (event) {
+    if (event.target.closest("#mobileMenuCloseBtn")) {
+        closeMobileMenu();
+    }
+});
+
+// Auto-close drawer when any nav link inside it is clicked
+if (mobileMenu) {
+    mobileMenu.querySelectorAll("a, button").forEach(function (el) {
+        el.addEventListener("click", function () {
+            // Only close for nav links — not the close button itself (already handled)
+            if (!el.closest(".mobile-menu-header")) {
+                closeMobileMenu();
+            }
+        });
     });
 }
 
 function openMobileMenu() {
     if (!mobileMenu || !hamburgerBtn) return;
     mobileMenu.classList.add("open");
+    if (mobileBackdrop) mobileBackdrop.classList.add("open");
     hamburgerBtn.setAttribute("aria-expanded", "true");
     hamburgerBtn.setAttribute("aria-label", "Close navigation menu");
+    document.body.style.overflow = "hidden"; // prevent scroll behind drawer
 }
 
 function closeMobileMenu() {
     if (!mobileMenu || !hamburgerBtn) return;
     mobileMenu.classList.remove("open");
+    if (mobileBackdrop) mobileBackdrop.classList.remove("open");
     hamburgerBtn.setAttribute("aria-expanded", "false");
     hamburgerBtn.setAttribute("aria-label", "Open navigation menu");
+    document.body.style.overflow = "";
 }
+
+// Close drawer on Escape key
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && mobileMenu && mobileMenu.classList.contains("open")) {
+        closeMobileMenu();
+    }
+});
 
 // -------------------------------------------------------
 // ACTIVE NAV LINK
 // Highlights the link that matches the current page
 // -------------------------------------------------------
 
-// Get the current page filename (e.g. "explore.html")
-const currentPage = window.location.pathname.split("/").pop() || "index.html";
+// -------------------------------------------------------
+// PAGE NAME HELPER
+// Vercel's cleanUrls strips .html from the URL, so the
+// pathname ends with "post" instead of "post.html".
+// This function returns the page name WITH .html so all
+// page comparisons work on both local and Vercel.
+// -------------------------------------------------------
+function getCurrentPageName() {
+    var raw = window.location.pathname.split("/").pop() || "";
+    // If it already has an extension, return as-is
+    if (raw.indexOf(".") !== -1) return raw;
+    // Map clean URL slugs back to their .html filenames
+    if (raw === "" || raw === "index") return "index.html";
+    return raw + ".html";
+}
+
+// Make it available globally so interactions.js and posts.js can use it
+window.getCurrentPageName = getCurrentPageName;
+
+// Get the current page filename (works with and without .html extension)
+const currentPage = getCurrentPageName();
 
 // Find all navigation links
 const navLinks = document.querySelectorAll(".nav-link");

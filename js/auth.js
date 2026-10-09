@@ -287,7 +287,7 @@ function updateNavForAuthState() {
             navAvatar.alt = user.name;
         }
 
-        // Show the logout button (we inject it if it doesn't exist yet)
+        // Desktop: inject a logout icon button into nav-right (hidden on mobile via CSS)
         if (!document.getElementById("logoutBtn")) {
             const logoutBtn = document.createElement("button");
             logoutBtn.id        = "logoutBtn";
@@ -307,6 +307,29 @@ function updateNavForAuthState() {
             } else {
                 navRight.appendChild(logoutBtn);
             }
+        }
+
+        // Mobile drawer: inject a logout entry at the bottom if not already there
+        const mobileMenu = document.getElementById("mobileMenu");
+        if (mobileMenu && !mobileMenu.querySelector(".mobile-menu-logout")) {
+            // Divider
+            const divider = document.createElement("div");
+            divider.className = "mobile-menu-divider";
+            mobileMenu.appendChild(divider);
+
+            // Logout button
+            const mobileLogout = document.createElement("button");
+            mobileLogout.className = "mobile-menu-logout";
+            mobileLogout.innerHTML =
+                '<i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Log Out';
+            mobileLogout.addEventListener("click", function () {
+                if (confirm("Are you sure you want to log out?")) {
+                    // Close the drawer first
+                    if (typeof closeMobileMenu === "function") closeMobileMenu();
+                    logoutUser();
+                }
+            });
+            mobileMenu.appendChild(mobileLogout);
         }
 
         // Hide login/register links from desktop nav-links if they exist
@@ -660,7 +683,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // ---- GUARD PROTECTED PAGES ----
     // Pages that require a logged-in user
     const protectedPages = ["create-post.html", "profile.html"];
-    const page = window.location.pathname.split("/").pop() || "index.html";
+    // Use getCurrentPageName from app.js if available (handles Vercel cleanUrls)
+    var page = typeof getCurrentPageName === "function"
+        ? getCurrentPageName()
+        : (window.location.pathname.split("/").pop() || "index.html");
 
     if (protectedPages.includes(page) && !getCurrentUserId()) {
         // Save the intended destination so we can redirect after login

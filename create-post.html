@@ -212,25 +212,100 @@
                         <span id="tagsHint" class="form-hint">Separate tags with commas. Up to 5 tags recommended.</span>
                     </div>
 
-                    <!-- Image URL -->
-                    <div class="form-group">
-                        <label class="form-label" for="postImage">Cover Image URL</label>
-                        <input
-                            type="url"
-                            id="postImage"
-                            class="form-input"
-                            placeholder="https://example.com/image.jpg (optional)"
-                            aria-describedby="imageHint"
-                        >
-                        <span id="imageHint" class="form-hint">Paste a public image URL for a cover photo.</span>
+                    <!-- Cover Media — file upload + URL fallback -->
+                    <div class="form-group" id="coverMediaGroup">
+                        <label class="form-label">
+                            Cover Image
+                        </label>
+
+                        <!-- Tab switcher -->
+                        <div class="upload-tabs" role="tablist" aria-label="Cover image source">
+                            <button type="button" class="upload-tab active" id="tabUploadFile"
+                                    role="tab" aria-selected="true" aria-controls="uploadFilePanel">
+                                <i class="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i>
+                                Upload from device
+                            </button>
+                            <button type="button" class="upload-tab" id="tabUploadUrl"
+                                    role="tab" aria-selected="false" aria-controls="uploadUrlPanel">
+                                <i class="fa-solid fa-link" aria-hidden="true"></i>
+                                Paste URL
+                            </button>
+                        </div>
+
+                        <!-- Panel: file upload -->
+                        <div id="uploadFilePanel" class="upload-panel" role="tabpanel">
+                            <label class="upload-dropzone" for="postImageFile" id="dropzone"
+                                   aria-label="Click or drag an image here to upload">
+                                <div class="upload-dropzone-inner" id="dropzoneInner">
+                                    <i class="fa-solid fa-cloud-arrow-up upload-dropzone-icon" aria-hidden="true"></i>
+                                    <span class="upload-dropzone-text">Click to choose an image, or drag &amp; drop</span>
+                                    <span class="upload-dropzone-hint">JPG, PNG, GIF, WebP — max 5 MB</span>
+                                </div>
+                            </label>
+                            <input type="file" id="postImageFile" accept="image/*"
+                                   class="upload-file-input" aria-label="Choose cover image from device">
+                        </div>
+
+                        <!-- Panel: URL input -->
+                        <div id="uploadUrlPanel" class="upload-panel" role="tabpanel" style="display:none;">
+                            <input
+                                type="url"
+                                id="postImage"
+                                class="form-input"
+                                placeholder="https://example.com/image.jpg"
+                                aria-describedby="imageHint"
+                            >
+                            <span id="imageHint" class="form-hint">Paste any public image URL.</span>
+                        </div>
+
+                        <!-- Shared preview (shown for both sources) -->
+                        <div id="imagePreviewBox" style="display:none; margin-top:12px;">
+                            <div style="position:relative; display:inline-block; width:100%;">
+                                <img id="imagePreview"
+                                     src=""
+                                     alt="Cover image preview"
+                                     style="width:100%; max-height:260px; object-fit:cover;
+                                            border-radius:10px; border:1px solid var(--border-color); display:block;">
+                                <button type="button" id="removeImageBtn"
+                                        aria-label="Remove cover image"
+                                        style="position:absolute; top:8px; right:8px;
+                                               background:rgba(0,0,0,0.6); color:#fff;
+                                               border:none; border-radius:50%; width:30px; height:30px;
+                                               cursor:pointer; font-size:14px; display:flex;
+                                               align-items:center; justify-content:center;">
+                                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Image preview -->
-                    <div id="imagePreviewBox" style="display:none; margin-bottom:16px;">
-                        <img id="imagePreview"
-                             src=""
-                             alt="Cover image preview"
-                             style="width:100%; height:200px; object-fit:cover; border-radius:10px; border:1px solid var(--border-color);">
+                    <!-- Video Upload (shown only when Video post type is selected) -->
+                    <div class="form-group" id="videoUploadGroup" style="display:none;">
+                        <label class="form-label">
+                            Video File
+                        </label>
+                        <label class="upload-dropzone upload-dropzone--video" for="postVideoFile"
+                               aria-label="Click or drag a video file here to upload">
+                            <div class="upload-dropzone-inner" id="videoDropzoneInner">
+                                <i class="fa-solid fa-film upload-dropzone-icon" aria-hidden="true"></i>
+                                <span class="upload-dropzone-text">Click to choose a video, or drag &amp; drop</span>
+                                <span class="upload-dropzone-hint">MP4, WebM, MOV — max 50 MB</span>
+                            </div>
+                        </label>
+                        <input type="file" id="postVideoFile" accept="video/*"
+                               class="upload-file-input" aria-label="Choose video from device">
+
+                        <!-- Video preview -->
+                        <div id="videoPreviewBox" style="display:none; margin-top:12px;">
+                            <video id="videoPreview" controls
+                                   style="width:100%; max-height:300px; border-radius:10px;
+                                          border:1px solid var(--border-color);">
+                            </video>
+                            <button type="button" id="removeVideoBtn" class="btn btn-secondary btn-sm"
+                                    style="margin-top:8px;" aria-label="Remove video">
+                                <i class="fa-solid fa-trash" aria-hidden="true"></i> Remove video
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Action buttons -->
@@ -359,33 +434,279 @@
     <script src="js/interactions.js"></script>
     <script src="js/posts.js"></script>
 
-    <!-- Image preview when URL is entered -->
+    <!-- Upload and media interaction script -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const imageInput   = document.getElementById("postImage");
-            const previewBox   = document.getElementById("imagePreviewBox");
-            const previewImg   = document.getElementById("imagePreview");
+    // ============================================================
+    // create-post.html inline script
+    // Handles: image file upload, image URL preview, video upload,
+    //          tab switching between file/url, drag-and-drop,
+    //          post type toggle (show/hide video section)
+    // ============================================================
 
-            if (imageInput) {
-                imageInput.addEventListener("input", function () {
-                    const url = imageInput.value.trim();
-                    if (url !== "") {
-                        previewImg.src = url;
-                        previewBox.style.display = "block";
+    // A module-level variable to hold the chosen cover image data URL.
+    // interactions.js reads window.pendingCoverImage when submitting.
+    window.pendingCoverImage = "";
+    window.pendingVideoData  = "";
 
-                        // Hide preview if image fails to load
-                        previewImg.onerror = function () {
-                            previewBox.style.display = "none";
-                        };
-                        previewImg.onload = function () {
-                            previewBox.style.display = "block";
-                        };
-                    } else {
-                        previewBox.style.display = "none";
-                    }
-                });
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ---- Elements ----
+        var tabFile       = document.getElementById("tabUploadFile");
+        var tabUrl        = document.getElementById("tabUploadUrl");
+        var panelFile     = document.getElementById("uploadFilePanel");
+        var panelUrl      = document.getElementById("uploadUrlPanel");
+        var fileInput     = document.getElementById("postImageFile");
+        var urlInput      = document.getElementById("postImage");
+        var previewBox    = document.getElementById("imagePreviewBox");
+        var previewImg    = document.getElementById("imagePreview");
+        var removeImgBtn  = document.getElementById("removeImageBtn");
+        var dropzone      = document.getElementById("dropzone");
+
+        var videoGroup    = document.getElementById("videoUploadGroup");
+        var videoFileInput = document.getElementById("postVideoFile");
+        var videoPreviewBox = document.getElementById("videoPreviewBox");
+        var videoPreview  = document.getElementById("videoPreview");
+        var removeVideoBtn = document.getElementById("removeVideoBtn");
+
+        // ---- Tab switching: File vs URL ----
+        if (tabFile) {
+            tabFile.addEventListener("click", function () {
+                tabFile.classList.add("active");
+                tabFile.setAttribute("aria-selected", "true");
+                tabUrl.classList.remove("active");
+                tabUrl.setAttribute("aria-selected", "false");
+                panelFile.style.display = "";
+                panelUrl.style.display  = "none";
+            });
+        }
+
+        if (tabUrl) {
+            tabUrl.addEventListener("click", function () {
+                tabUrl.classList.add("active");
+                tabUrl.setAttribute("aria-selected", "true");
+                tabFile.classList.remove("active");
+                tabFile.setAttribute("aria-selected", "false");
+                panelUrl.style.display  = "";
+                panelFile.style.display = "none";
+            });
+        }
+
+        // ---- Helper: show image preview ----
+        function showImagePreview(src) {
+            if (!previewImg || !previewBox) return;
+            previewImg.src = src;
+            previewBox.style.display = "block";
+        }
+
+        function clearImagePreview() {
+            window.pendingCoverImage = "";
+            if (previewBox)   previewBox.style.display   = "none";
+            if (previewImg)   previewImg.src             = "";
+            if (fileInput)    fileInput.value            = "";
+            if (urlInput)     urlInput.value             = "";
+            // Reset dropzone text
+            var inner = document.getElementById("dropzoneInner");
+            if (inner) {
+                inner.innerHTML =
+                    '<i class="fa-solid fa-cloud-arrow-up upload-dropzone-icon" aria-hidden="true"></i>' +
+                    '<span class="upload-dropzone-text">Click to choose an image, or drag &amp; drop</span>' +
+                    '<span class="upload-dropzone-hint">JPG, PNG, GIF, WebP — max 5 MB</span>';
             }
+        }
+
+        // ---- Remove image button ----
+        if (removeImgBtn) {
+            removeImgBtn.addEventListener("click", function () {
+                clearImagePreview();
+            });
+        }
+
+        // ---- Image FILE upload via FileReader ----
+        if (fileInput) {
+            fileInput.addEventListener("change", function () {
+                handleImageFile(fileInput.files[0]);
+            });
+        }
+
+        function handleImageFile(file) {
+            if (!file) return;
+
+            if (!file.type.startsWith("image/")) {
+                showToast("⚠️ Please choose an image file (JPG, PNG, GIF or WebP).");
+                return;
+            }
+
+            var maxBytes = 5 * 1024 * 1024; // 5 MB
+            if (file.size > maxBytes) {
+                showToast("⚠️ Image is too large. Please use a file under 5 MB.");
+                return;
+            }
+
+            // Update the dropzone to show the filename
+            var inner = document.getElementById("dropzoneInner");
+            if (inner) {
+                inner.innerHTML =
+                    '<i class="fa-solid fa-check-circle upload-dropzone-icon" aria-hidden="true" style="color:var(--color-success);"></i>' +
+                    '<span class="upload-dropzone-text">' + escapeHtml(file.name) + '</span>' +
+                    '<span class="upload-dropzone-hint">' + (file.size / 1024).toFixed(0) + ' KB — click to change</span>';
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                // Store the data URL so interactions.js can pick it up
+                window.pendingCoverImage = e.target.result;
+                showImagePreview(e.target.result);
+            };
+
+            reader.onerror = function () {
+                showToast("❌ Could not read the image. Please try again.");
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // ---- Image URL input preview ----
+        if (urlInput) {
+            urlInput.addEventListener("input", function () {
+                var url = urlInput.value.trim();
+                if (!url) {
+                    window.pendingCoverImage = "";
+                    if (previewBox) previewBox.style.display = "none";
+                    return;
+                }
+                // Show preview; store the URL as the cover image
+                window.pendingCoverImage = url;
+                showImagePreview(url);
+                previewImg.onerror = function () {
+                    if (previewBox) previewBox.style.display = "none";
+                };
+            });
+        }
+
+        // ---- Drag-and-drop on the dropzone ----
+        if (dropzone) {
+            dropzone.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                dropzone.classList.add("dragover");
+            });
+            dropzone.addEventListener("dragleave", function () {
+                dropzone.classList.remove("dragover");
+            });
+            dropzone.addEventListener("drop", function (e) {
+                e.preventDefault();
+                dropzone.classList.remove("dragover");
+                var files = e.dataTransfer.files;
+                if (files && files.length > 0) {
+                    handleImageFile(files[0]);
+                }
+            });
+        }
+
+        // ---- Video FILE upload ----
+        if (videoFileInput) {
+            videoFileInput.addEventListener("change", function () {
+                handleVideoFile(videoFileInput.files[0]);
+            });
+        }
+
+        function handleVideoFile(file) {
+            if (!file) return;
+
+            if (!file.type.startsWith("video/")) {
+                showToast("⚠️ Please choose a video file (MP4, WebM or MOV).");
+                return;
+            }
+
+            var maxBytes = 50 * 1024 * 1024; // 50 MB
+            if (file.size > maxBytes) {
+                showToast("⚠️ Video is too large. Please use a file under 50 MB.");
+                return;
+            }
+
+            // Update video dropzone text
+            var inner = document.getElementById("videoDropzoneInner");
+            if (inner) {
+                inner.innerHTML =
+                    '<i class="fa-solid fa-check-circle upload-dropzone-icon" style="color:var(--color-success);" aria-hidden="true"></i>' +
+                    '<span class="upload-dropzone-text">' + escapeHtml(file.name) + '</span>' +
+                    '<span class="upload-dropzone-hint">' + (file.size / (1024*1024)).toFixed(1) + ' MB — click to change</span>';
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                window.pendingVideoData = e.target.result;
+
+                if (videoPreview && videoPreviewBox) {
+                    videoPreview.src              = e.target.result;
+                    videoPreviewBox.style.display = "block";
+                }
+            };
+
+            reader.onerror = function () {
+                showToast("❌ Could not read the video file. Please try again.");
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // ---- Drag-and-drop on video dropzone ----
+        var videoDropzone = document.querySelector(".upload-dropzone--video");
+        if (videoDropzone) {
+            videoDropzone.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                videoDropzone.classList.add("dragover");
+            });
+            videoDropzone.addEventListener("dragleave", function () {
+                videoDropzone.classList.remove("dragover");
+            });
+            videoDropzone.addEventListener("drop", function (e) {
+                e.preventDefault();
+                videoDropzone.classList.remove("dragover");
+                var files = e.dataTransfer.files;
+                if (files && files.length > 0) {
+                    handleVideoFile(files[0]);
+                }
+            });
+        }
+
+        // ---- Remove video button ----
+        if (removeVideoBtn) {
+            removeVideoBtn.addEventListener("click", function () {
+                window.pendingVideoData = "";
+                if (videoPreview)    videoPreview.src = "";
+                if (videoPreviewBox) videoPreviewBox.style.display = "none";
+                if (videoFileInput)  videoFileInput.value = "";
+                var inner = document.getElementById("videoDropzoneInner");
+                if (inner) {
+                    inner.innerHTML =
+                        '<i class="fa-solid fa-film upload-dropzone-icon" aria-hidden="true"></i>' +
+                        '<span class="upload-dropzone-text">Click to choose a video, or drag &amp; drop</span>' +
+                        '<span class="upload-dropzone-hint">MP4, WebM, MOV — max 50 MB</span>';
+                }
+            });
+        }
+
+        // ---- Show/hide video section based on post type ----
+        var typeRadios = document.querySelectorAll('input[name="postType"]');
+        typeRadios.forEach(function (radio) {
+            radio.addEventListener("change", function () {
+                if (radio.value === "video" && radio.checked) {
+                    if (videoGroup) videoGroup.style.display = "block";
+                } else {
+                    if (videoGroup) videoGroup.style.display = "none";
+                }
+            });
         });
+
+        // ---- Simple HTML escape helper ----
+        function escapeHtml(str) {
+            var d = document.createElement("div");
+            d.textContent = str;
+            return d.innerHTML;
+        }
+    });
     </script>
 
 </body>

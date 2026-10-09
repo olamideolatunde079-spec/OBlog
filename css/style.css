@@ -1025,8 +1025,7 @@ body.dark-mode .topic-chip.active {
 }
 
 /* Read More link on post cards */
-.post-read-more {
-    display: inline-flex;
+.post-read-more {    display: inline-flex;
     align-items: center;
     gap: 5px;
     font-size: 13px;
@@ -2845,5 +2844,141 @@ body.dark-mode .toast {
     /* Section padding */
     .layout-full {
         padding: var(--space-lg) 0;
+    }
+}
+
+/* -------------------------------------------------------
+   UPLOAD ZONE — Create Post page
+   Tab switcher, drag-and-drop dropzone, file input
+   ------------------------------------------------------- */
+
+/* Tab switcher: "Upload from device" / "Paste URL" */
+.upload-tabs {
+    display: flex;
+    gap: 0;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.upload-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-tag);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-family);
+}
+
+.upload-tab:not(:last-child) {
+    border-right: 1.5px solid var(--border-color);
+}
+
+.upload-tab.active {
+    background: var(--text-primary);
+    color: var(--bg-card);
+}
+
+.upload-tab:hover:not(.active) {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Upload panel container */
+.upload-panel {
+    display: block;
+}
+
+/* The visible dropzone label */
+.upload-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--bg-tag);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    padding: var(--space-lg);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.dragover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
+}
+
+.upload-dropzone.dragover {
+    transform: scale(1.01);
+}
+
+.upload-dropzone-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+}
+
+.upload-dropzone-icon {
+    font-size: 32px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.upload-dropzone-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.upload-dropzone-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* The actual <input type="file"> — hidden, triggered by the label */
+.upload-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Video post hero — same size as image hero */
+video.post-hero-image {
+    width: 100%;
+    max-height: 420px;
+    display: block;
+    background: #000;
+    border-radius: 0;
+}
+
+@media (max-width: 640px) {
+    .upload-tabs {
+        flex-direction: column;
+    }
+    .upload-tab:not(:last-child) {
+        border-right: none;
+        border-bottom: 1.5px solid var(--border-color);
+    }
+    .upload-dropzone {
+        min-height: 100px;
     }
 }

@@ -334,10 +334,18 @@ function initPostPage() {
             <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
         </button>` : "";
 
-    // Build the image
-    const imageHTML = post.image
-        ? `<img class="post-hero-image" src="${post.image}" alt="${post.title}" loading="lazy">`
-        : "";
+    // Build the image/video header media
+    var mediaHTML = "";
+    if (post.video) {
+        mediaHTML = `<video class="post-hero-image" controls preload="metadata"
+                           style="background:#000;"
+                           aria-label="Video: ${post.title}">
+                       <source src="${post.video}">
+                       Your browser does not support the video tag.
+                     </video>`;
+    } else if (post.image) {
+        mediaHTML = `<img class="post-hero-image" src="${post.image}" alt="${post.title}" loading="lazy">`;
+    }
 
     // Get author display info — look up live from oblogUsers first
     const allUsersForPost = typeof getUsers === "function" ? getUsers() : [];
@@ -351,7 +359,7 @@ function initPostPage() {
 
     postContent.innerHTML = `
         <article class="post-article">
-            ${imageHTML}
+            ${mediaHTML}
             <div class="post-article-body">
 
                 <div class="post-tags" style="margin-bottom:16px;">${tagsHTML}</div>
@@ -894,13 +902,34 @@ function loadPostIntoEditForm(postId) {
         postDescription: post.description || "",
         postContent:     post.content ? post.content.replace(/<[^>]+>/g, "") : "",
         postTags:        Array.isArray(post.tags) ? post.tags.join(", ") : "",
-        postImage:       post.image       || ""
+        postImage:       post.image && post.image.startsWith("http") ? post.image : ""
     };
 
     Object.keys(fields).forEach(function (id) {
         const el = document.getElementById(id);
         if (el) el.value = fields[id];
     });
+
+    // Restore cover image preview if the post already has one
+    if (post.image) {
+        window.pendingCoverImage = post.image;
+        var previewBox = document.getElementById("imagePreviewBox");
+        var previewImg = document.getElementById("imagePreview");
+        if (previewImg) previewImg.src = post.image;
+        if (previewBox) previewBox.style.display = "block";
+    }
+
+    // Restore video preview if the post already has one
+    if (post.video) {
+        window.pendingVideoData = post.video;
+        var videoPreviewBox = document.getElementById("videoPreviewBox");
+        var videoPreview    = document.getElementById("videoPreview");
+        if (videoPreview)    videoPreview.src = post.video;
+        if (videoPreviewBox) videoPreviewBox.style.display = "block";
+        // Show the video section
+        var videoGroup = document.getElementById("videoUploadGroup");
+        if (videoGroup) videoGroup.style.display = "block";
+    }
 
     // Mark the correct post type radio
     const typeRadio = document.querySelector('input[name="postType"][value="' + (post.type || "article") + '"]');
@@ -959,6 +988,23 @@ function submitPost(status) {
         ? rawTags.split(",").map(function (t) { return t.trim(); }).filter(Boolean)
         : ["General"];
 
+    // --- Resolve cover image ---
+    // Priority: 1) file uploaded via FileReader (window.pendingCoverImage)
+    //           2) URL typed in the URL field
+    //           3) empty (no cover image)
+    var resolvedImage = "";
+    if (window.pendingCoverImage && window.pendingCoverImage !== "") {
+        resolvedImage = window.pendingCoverImage;
+    } else if (imageInput && imageInput.value.trim() !== "") {
+        resolvedImage = imageInput.value.trim();
+    }
+
+    // --- Resolve video ---
+    var resolvedVideo = "";
+    if (window.pendingVideoData && window.pendingVideoData !== "") {
+        resolvedVideo = window.pendingVideoData;
+    }
+
     // Check if we're editing an existing post
     const editId = getUrlParam("edit");
 
@@ -972,7 +1018,8 @@ function submitPost(status) {
             allPosts[postIndex].description = desc;
             allPosts[postIndex].content     = "<p>" + content.replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>") + "</p>";
             allPosts[postIndex].tags        = tagsArr;
-            allPosts[postIndex].image       = imageInput ? imageInput.value.trim() : "";
+            allPosts[postIndex].image       = resolvedImage || allPosts[postIndex].image;
+            allPosts[postIndex].video       = resolvedVideo || allPosts[postIndex].video || "";
             allPosts[postIndex].type        = postType;
             allPosts[postIndex].readTime    = Math.ceil(content.split(" ").length / 200) + " min read";
             allPosts[postIndex].updatedAt   = new Date().toISOString();
@@ -994,7 +1041,8 @@ function submitPost(status) {
             description: desc,
             content:     "<p>" + content.replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>") + "</p>",
             tags:        tagsArr,
-            image:       imageInput ? imageInput.value.trim() : "",
+            image:       resolvedImage,
+            video:       resolvedVideo,
             type:        postType,
             likes:       [],
             comments:    [],
@@ -1294,7 +1342,10 @@ function escapeHTML(text) {
 // INIT ON PAGE LOAD
 // -------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
-    const page = window.location.pathname.split("/").pop() || "index.html";
+    // Use getCurrentPageName() from app.js which handles cleanUrls (.html stripping)
+    var page = typeof getCurrentPageName === "function"
+        ? getCurrentPageName()
+        : (window.location.pathname.split("/").pop() || "index.html");
 
     if (page === "post.html")         initPostPage();
     if (page === "create-post.html")  initCreatePost();
